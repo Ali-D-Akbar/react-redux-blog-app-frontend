@@ -2,7 +2,7 @@ import axios from 'axios';
 import {tokenConfig} from "./auth";
 
 import {ADD_BLOG, DELETE_BLOG, GET_BLOGLIST} from './types';
-import {returnErrors} from "./messages";
+import {createMessage, returnErrors} from "./messages";
 
 //GET_BLOGLIST
 
@@ -20,6 +20,7 @@ export const getBlogList = () => (dispatch, getState) => {
 export const deleteBlog = (id) => (dispatch, getState) => {
     axios.delete(`/api/blog/${id}/`, tokenConfig(getState))
         .then(res => {
+            dispatch(createMessage({ deleteLead: "Lead Deleted" }));
             dispatch({
                 type: DELETE_BLOG,
                 payload: id

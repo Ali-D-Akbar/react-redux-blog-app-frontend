@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {deleteBlog, getBlogList} from "../../actions/blogList";
+import './BlogList.css'
 
 export class BlogList extends Component {
 
@@ -40,7 +41,7 @@ export class BlogList extends Component {
 
         const renderPageNumbers = pageNumbers.map(number => {
             return (
-                <li style="margin-right: 0.3em; color: blue; user-select: none; cursor: pointer;"
+                <li
                     key={number}
                     id={number}
                     onClick={this.handleClick}
@@ -51,7 +52,7 @@ export class BlogList extends Component {
         });
         return (
             <div>
-                <h1 style="text-align: center;">Blog List</h1>
+                <h1>Blog List</h1>
                 {currentBlogList.map((blogItem) => (
                     <div className="card" key={blogItem.id}>
                         <div className="card-body" key={blogItem.id}>
@@ -66,7 +67,8 @@ export class BlogList extends Component {
                     </div>
                 ))}
 
-                <ul id="page-numbers" style="list-style: none; display: flex;">
+                <ul id="page-numbers">
+                    Page: <br/>
                     {renderPageNumbers}
                 </ul>
             </div>

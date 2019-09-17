@@ -39,6 +39,7 @@ export class Form extends Component {
                             name="title"
                             onChange={this.onChange}
                             value={title}
+                            required
                         />
                     </div>
                     <div className="form-group">
@@ -48,6 +49,7 @@ export class Form extends Component {
                             name="description"
                             onChange={this.onChange}
                             value={description}
+                            required
                         />
                     </div>
                     <div className="form-group">

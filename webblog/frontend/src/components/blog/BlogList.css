@@ -1,0 +1,10 @@
+li {
+    margin-right: 0.3em;
+    color: blue;
+    user-select: none;
+    cursor: pointer;
+}
+
+#page-numbers {
+    list-style: none;
+}
