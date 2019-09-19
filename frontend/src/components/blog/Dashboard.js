@@ -1,12 +1,13 @@
 import React, {Fragment} from "react";
-import Form from "./Form";
+import CreateForm from "./CreateForm";
 import BlogList from "./BlogList";
 
 export default function Dashboard() {
     return (
         <Fragment>
-            <Form/>
+            <CreateForm/>
             <BlogList/>
         </Fragment>
     );
 }
+

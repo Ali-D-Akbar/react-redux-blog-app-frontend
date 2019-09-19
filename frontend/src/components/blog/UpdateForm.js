@@ -1,15 +1,19 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {addBlog} from "../../actions/blogList";
+import {updateBlog} from "../../actions/blogList";
 
-class Form extends Component {
+class UpdateForm extends Component {
     static propTypes = {
-        addBlog: PropTypes.func.isRequired
+        updateBlog: PropTypes.func.isRequired,
+        id: PropTypes.number,
+        title: PropTypes.string,
+        description: PropTypes.string
     };
     state = {
-        title: "",
-        description: "",
+        id: this.props.id,
+        title: this.props.title,
+        description: this.props.description
     };
 
     onChange = e => this.setState({[e.target.name]: e.target.value});
@@ -18,7 +22,7 @@ class Form extends Component {
         e.preventDefault();
         const {title, description} = this.state;
         const blogItem = {title, description};
-        this.props.addBlog(blogItem);
+        this.props.updateBlog(this.state.id, blogItem);
         this.setState({
             title: "",
             description: "",
@@ -29,7 +33,7 @@ class Form extends Component {
         const {title, description} = this.state;
         return (
             <div className="card card-body mt-4 mb-4">
-                <h2>Add Blog</h2>
+                <h2>Update Blog</h2>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Title</label>
@@ -54,7 +58,7 @@ class Form extends Component {
                     </div>
                     <div className="form-group">
                         <button type="submit" className="btn btn-primary">
-                            Submit
+                            Post
                         </button>
                     </div>
                 </form>
@@ -65,5 +69,5 @@ class Form extends Component {
 
 export default connect(
     null,
-    {addBlog}
-)(Form);
+    {updateBlog}
+)(UpdateForm);

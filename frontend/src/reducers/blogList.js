@@ -1,4 +1,4 @@
-import {ADD_BLOG, DELETE_BLOG, GET_BLOGLIST} from "../actionTypes/blogList";
+import {ADD_BLOG, DELETE_BLOG, GET_BLOGLIST, UPDATE_BLOG} from "../actionTypes/blog";
 
 const initialState = {
     blogList: []
@@ -15,9 +15,14 @@ export default function (state = initialState, action) {
         case DELETE_BLOG:
             return {
                 ...state,
-                blogList: state.blogList.filter(lead => lead.id !== action.payload)
+                blogList: state.blogList.filter(blogItem => blogItem.id !== action.payload)
             };
         case ADD_BLOG:
+            return {
+                ...state,
+                blogList: [...state.blogList, action.payload]
+            };
+        case UPDATE_BLOG:
             return {
                 ...state,
                 blogList: [...state.blogList, action.payload]

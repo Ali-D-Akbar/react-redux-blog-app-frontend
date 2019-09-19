@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import {deleteBlog, getBlogList} from "../../actions/blogList";
+import {deleteBlog, getBlogItem, getBlogList} from "../../actions/blogList";
 import './BlogList.css'
+import {Link} from "react-router-dom";
 
 class BlogList extends Component {
 
@@ -50,20 +51,28 @@ class BlogList extends Component {
                 </li>
             );
         });
+
         return (
             <div>
                 <h1>Blog List</h1>
                 {currentBlogList.map((blogItem) => (
                     <div className="card" key={blogItem.id}>
-                        <div className="card-body" key={blogItem.id}>
-                            <h5 className="card-title">{blogItem.title}</h5>
-                            <h6 className="card-subtitle mb-2 text-muted">{blogItem.description}</h6>
-                            <p className="card-text">{blogItem.owner}</p>
-                            <p className="card-text">{blogItem.created}</p>
-                            <button className="btn btn-danger btn-sm"
-                                    onClick={this.props.deleteBlog.bind(this, blogItem.id)}> Delete
-                            </button>
-                        </div>
+                        <Link to={{
+                            pathname: '/blogitem',
+                            props: {
+                                id: blogItem.id
+                            }
+                        }} className="nav-link">
+                            <div className="card-body clickable" key={blogItem.id}>
+                                <p className="card-text">Posted by: {blogItem.owner}</p>
+                                <h5 className="card-title">Title: {blogItem.title}</h5>
+                                <h6 className="card-subtitle mb-2 text-muted">{blogItem.description}</h6>
+                                <p className="card-text">{(new Date(blogItem.created)).toString()}</p>
+                                <button className="btn btn-danger btn-sm"
+                                        onClick={this.props.deleteBlog.bind(this, blogItem.id)}> Delete
+                                </button>
+                            </div>
+                        </Link>
                     </div>
                 ))}
 
@@ -80,4 +89,4 @@ const mapStateToProps = state => ({
     blogList: state.blogList.blogList
 });
 
-export default connect(mapStateToProps, {getBlogList, deleteBlog})(BlogList);
+export default connect(mapStateToProps, {getBlogList, deleteBlog, getBlogItem})(BlogList);
