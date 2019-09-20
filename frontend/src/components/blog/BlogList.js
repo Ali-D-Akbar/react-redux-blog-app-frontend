@@ -9,8 +9,7 @@ class BlogList extends Component {
 
     static propTypes = {
         blogList: PropTypes.array.isRequired,
-        getBlogList: PropTypes.func.isRequired,
-        deleteBlog: PropTypes.func.isRequired
+        getBlogList: PropTypes.func.isRequired
     };
 
     state = {
@@ -68,9 +67,6 @@ class BlogList extends Component {
                                 <h5 className="card-title">Title: {blogItem.title}</h5>
                                 <h6 className="card-subtitle mb-2 text-muted">{blogItem.description}</h6>
                                 <p className="card-text">{(new Date(blogItem.created)).toString()}</p>
-                                <button className="btn btn-danger btn-sm"
-                                        onClick={this.props.deleteBlog.bind(this, blogItem.id)}> Delete
-                                </button>
                             </div>
                         </Link>
                     </div>

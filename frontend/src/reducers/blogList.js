@@ -25,7 +25,7 @@ export default function (state = initialState, action) {
         case UPDATE_BLOG:
             return {
                 ...state,
-                blogList: [...state.blogList, action.payload]
+                blogList: state.blogList.filter(blogItem => blogItem.id !== action.payload)
             };
         default:
             return state;

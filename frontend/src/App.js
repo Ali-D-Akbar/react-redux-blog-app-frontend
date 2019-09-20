@@ -13,13 +13,6 @@ import {loadUser} from "./actions/auth";
 import BlogItem from "./components/blog/BlogItem";
 
 class App extends Component {
-
-    state = {
-        blog_list: [],
-        currentPage: 1,
-        blogsPerPage: 3
-    };
-
     constructor(props) {
         super(props);
     }
@@ -35,9 +28,9 @@ class App extends Component {
                     <Header/>
                     <div className="container">
                         <Switch>
-                            <PrivateRoute exact path="/blogitem" component={BlogItem}/>
                             <PrivateRoute exact path="/" component={Dashboard}/>
                             <Route exact path="/register" component={Register}/>
+                            <Route exact path="/blogitem" component={BlogItem}/>
                             <Route exact path="/login" component={Login}/>
                         </Switch>
                     </div>

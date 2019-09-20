@@ -4,6 +4,8 @@ import {tokenConfig} from "./auth";
 import {ADD_BLOG, CLEAR_BLOGITEM, DELETE_BLOG, GET_BLOGITEM, GET_BLOGLIST, UPDATE_BLOG} from '../actionTypes/blog'
 import {createMessage, returnErrors} from "./messages";
 import serverData from '../config';
+import React from "react";
+import {Redirect} from "react-router-dom";
 //GET_BLOGLIST
 
 export const getBlogList = () => (dispatch, getState) => {
@@ -23,6 +25,7 @@ export const getBlogList = () => (dispatch, getState) => {
 //GET_BLOGITEM
 
 export const getBlogItem = (id) => (dispatch, getState) => {
+    console.log(id);
     axios.get(serverData.django_server + `/api/blog/${id}/`, tokenConfig(getState))
         .then(res => {
             dispatch({
@@ -61,7 +64,7 @@ export const updateBlog = (id, blog) => (dispatch, getState) => {
         .then(res => {
             dispatch({
                 type: UPDATE_BLOG,
-                payload: res.data
+                payload: id
             });
         }).catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };

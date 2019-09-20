@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 import {updateBlog} from "../../actions/blogList";
+import {Redirect} from "react-router-dom";
 
 class UpdateForm extends Component {
     static propTypes = {
@@ -13,7 +14,8 @@ class UpdateForm extends Component {
     state = {
         id: this.props.id,
         title: this.props.title,
-        description: this.props.description
+        description: this.props.description,
+        redirect: false
     };
 
     onChange = e => this.setState({[e.target.name]: e.target.value});
@@ -26,12 +28,18 @@ class UpdateForm extends Component {
         this.setState({
             title: "",
             description: "",
+            redirect: true
         });
+
     };
 
     render() {
         const {title, description} = this.state;
+        if (this.state.redirect) {
+            return <Redirect to='/'/>
+        }
         return (
+
             <div className="card card-body mt-4 mb-4">
                 <h2>Update Blog</h2>
                 <form onSubmit={this.onSubmit}>
