@@ -22,12 +22,11 @@ class Dashboard extends Component {
                 </CreateBlogModal>
                 <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
                     <li className="nav-item">
-                        <button className="btn btn-info btn-sm text-light" type="button" onClick={this.showModal}>
+                        <button className="btn btn-primary" type="button" onClick={this.showModal}>
                             Add New Blog
                         </button>
                     </li>
                 </ul>
-
                 <BlogList/>
             </Fragment>
         );

@@ -7,16 +7,11 @@ import store from './store';
 
 import Login from "./components/accounts/Login"
 import Register from "./components/accounts/Register";
-import PrivateRoute from "./components/common/PrivateRoute";
 import Header from "./components/layout/Header";
 import {loadUser} from "./actions/auth";
 import BlogItem from "./components/blog/BlogItem";
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         store.dispatch(loadUser())
     }
@@ -28,10 +23,10 @@ class App extends Component {
                     <Header/>
                     <div className="container">
                         <Switch>
-                            <PrivateRoute exact path="/" component={Dashboard}/>
+                            <Route exact path="/" component={Dashboard}/>
                             <Route exact path="/register" component={Register}/>
-                            <Route exact path="/blogitem" component={BlogItem}/>
                             <Route exact path="/login" component={Login}/>
+                            <Route exact path="/blogitem" component={BlogItem}/>
                         </Switch>
                     </div>
                 </Router>

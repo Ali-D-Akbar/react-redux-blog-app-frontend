@@ -54,6 +54,7 @@ class BlogList extends Component {
         return (
             <div>
                 <h1>Blog List</h1>
+
                 {currentBlogList.map((blogItem) => (
                     <div className="card" key={blogItem.id}>
                         <Link to={{
@@ -65,8 +66,8 @@ class BlogList extends Component {
                             <div className="card-body clickable" key={blogItem.id}>
                                 <p className="card-text">Posted by: {blogItem.owner}</p>
                                 <h5 className="card-title">Title: {blogItem.title}</h5>
-                                <h6 className="card-subtitle mb-2 text-muted">{blogItem.description}</h6>
-                                <p className="card-text">{(new Date(blogItem.created)).toString()}</p>
+                                <h6 className="card-text">{blogItem.description}</h6>
+                                <p className="card-subtitle mb-2 text-muted">{(new Date(blogItem.created)).toString()}</p>
                             </div>
                         </Link>
                     </div>
@@ -82,7 +83,7 @@ class BlogList extends Component {
 }
 
 const mapStateToProps = state => ({
-    blogList: state.blogList.blogList
+    blogList: state.blogList.blogList,
 });
 
 export default connect(mapStateToProps, {getBlogList, deleteBlog, getBlogItem})(BlogList);

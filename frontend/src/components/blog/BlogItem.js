@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import {deleteBlog, getBlogItem} from "../../actions/blogList";
 import UpdateForm from "./UpdateForm";
 import {Redirect} from "react-router-dom";
+import {addComment} from "../../actions/comment";
 
 
 class BlogItem extends Component {
@@ -12,10 +13,12 @@ class BlogItem extends Component {
         auth: PropTypes.object.isRequired,
         deleteBlog: PropTypes.func.isRequired,
         getBlogItem: PropTypes.func.isRequired,
+        addComment: PropTypes.func.isRequired,
     };
 
     state = {
-        redirect: false
+        commentDescription: "",
+        redirect: false,
     };
 
     componentDidMount() {
@@ -23,11 +26,29 @@ class BlogItem extends Component {
         this.props.getBlogItem(id);
     }
 
+    onChange = e => {
+        this.setState({[e.target.name]: e.target.value});
+    };
+
     onClick = e => {
         this.props.deleteBlog(this.props.blogItem.id);
         this.setState({
             redirect: true
         });
+    };
+
+    postComment = e => {
+        e.preventDefault();
+        const {commentDescription} = this.state;
+        const comment = {
+            'blog': this.props.blogItem.url,
+            'description': commentDescription
+        };
+        this.props.addComment(comment);
+        this.setState({
+            description: "",
+        });
+
     };
 
     render() {
@@ -43,11 +64,29 @@ class BlogItem extends Component {
                             onClick={this.onClick}> Delete
                     </button>
                 </div>
-
+            );
+            const commentField = (
+                <form onSubmit={this.postComment}>
+                        <input
+                            className="form-control"
+                            type="text"
+                            value={this.state.commentDescription}
+                            name="commentDescription"
+                            placeholder="Add a Comment"
+                            onChange={this.onChange}
+                            required
+                        />
+                    </form>
             );
 
-            const isOwner = this.props.auth.user.username === this.props.blogItem.owner;
+            let isOwner = false;
+            let isAuthenticated;
+            const owner = this.props.blogItem.owner;
+            if (this.props.auth.isAuthenticated) {
+                isOwner = this.props.auth.user.username === owner;
+                isAuthenticated = this.props.auth.isAuthenticated;
 
+            }
 
             return (
                 <Fragment>
@@ -59,9 +98,24 @@ class BlogItem extends Component {
                                 <h6 className="card-subtitle mb-2 text-muted">{this.props.blogItem.description}</h6>
                                 <p className="card-text">{(new Date(this.props.blogItem.created)).toString()}</p>
 
+                                {isAuthenticated? commentField: null}
+
                                 {isOwner ? authLinks : null}
                             </div>
                         </div>
+
+
+                        {this.props.blogItem.comment.map((comment) => (
+                            <div className="card" key={comment.id}>
+                                <div className="card-body" key={comment.id}>
+                                    <h5 className="card-title">{comment.description}</h5>
+                                    <h6 className="card-subtitle mb-2 text-muted">By: {comment.owner}</h6>
+                                    <p className="card-text">{(new Date(comment.created)).toString()}</p>
+                                </div>
+                            </div>
+                        ))
+                        }
+
                     </div>
                 </Fragment>
 
@@ -75,12 +129,11 @@ class BlogItem extends Component {
     }
 }
 
-
 const mapStateToProps = state => ({
     blogItem: state.blogItem.blogItem,
     auth: state.auth
 });
 
 export default connect(
-    mapStateToProps, {getBlogItem, deleteBlog}
+    mapStateToProps, {getBlogItem, deleteBlog, addComment}
 )(BlogItem);

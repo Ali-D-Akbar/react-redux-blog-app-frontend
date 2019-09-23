@@ -30,7 +30,6 @@ class CreateForm extends Component {
         return (
 
             <div className="card card-body mt-4 mb-4">
-                <h2>Add Blog</h2>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Title</label>
@@ -47,6 +46,7 @@ class CreateForm extends Component {
                         <label>Description</label>
                         <textarea
                             className="form-control"
+                            rows="10"
                             name="description"
                             onChange={this.onChange}
                             value={description}

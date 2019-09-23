@@ -78,7 +78,6 @@ export const login = (username, password) => dispatch => {
     axios
         .post(serverData.django_server + "/api/auth/login", body, config)
         .then(res => {
-            console.log(res);
             dispatch({
                 type: LOGIN_SUCCESS,
                 payload: res.data
