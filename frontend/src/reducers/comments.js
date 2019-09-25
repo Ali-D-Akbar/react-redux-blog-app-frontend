@@ -1,4 +1,4 @@
-import {ADD_COMMENT, CLEAR_COMMENTS, GET_COMMENTS} from "../actionTypes/comments";
+import {ADD_COMMENT, CLEAR_COMMENTS} from "../actionTypes/comments";
 
 const initialState = {
     comments: []
@@ -7,11 +7,6 @@ const initialState = {
 
 export default function (state = initialState, action) {
     switch (action.type) {
-        case GET_COMMENTS:
-            return {
-                ...state,
-                comments: action.payload
-            };
         case ADD_COMMENT:
             return {
                 ...state,

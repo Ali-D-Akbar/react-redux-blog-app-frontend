@@ -27,10 +27,9 @@ class UpdateForm extends Component {
         this.props.updateBlog(this.state.id, blogItem);
         this.setState({
             title: "",
-            description: "",
-            redirect: true
+            description: ""
         });
-
+        setTimeout(() => this.setState({ redirect: true }), 1000);
     };
 
     render() {
@@ -41,7 +40,6 @@ class UpdateForm extends Component {
         return (
 
             <div className="card card-body mt-4 mb-4">
-                <h2>Update Blog</h2>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Title</label>
@@ -58,6 +56,7 @@ class UpdateForm extends Component {
                         <label>Description</label>
                         <textarea
                             className="form-control"
+                            rows="10"
                             name="description"
                             onChange={this.onChange}
                             value={description}

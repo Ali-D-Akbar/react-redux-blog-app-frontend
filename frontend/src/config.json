@@ -1,3 +1,4 @@
 {
-  "django_server": "http://127.0.0.1:8000"
+  "django_server": "http://127.0.0.1:8000",
+  "comment": "/api/comment/"
 }

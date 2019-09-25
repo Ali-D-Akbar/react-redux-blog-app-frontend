@@ -12,12 +12,12 @@ import {
 } from "../actionTypes/auth";
 import serverData from '../config';
 
-export const tokenConfig = getState => {
+export const tokenConfig = (getState) => {
     // Get token from state
     const token = getState().auth.token;
 
     // Headers
-    const config = {
+    let config = {
         headers: {
             "Content-Type": "application/json"
         }

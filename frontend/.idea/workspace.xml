@@ -1,17 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="264333fc-499d-4df9-b6ec-133297d100fd" name="Default Changelist" comment="" />
+    <list default="true" id="264333fc-499d-4df9-b6ec-133297d100fd" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/frontend.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actionTypes/blog.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actionTypes/blog.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actionTypes/comments.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actionTypes/comments.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/blogList.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/blogList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/comment.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/comment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/blog/BlogItem.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/blog/BlogItem.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/blog/BlogList.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/blog/BlogList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/blog/CreateForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/blog/CreateForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/blog/Dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/blog/Dashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/blog/UpdateForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/blog/UpdateForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/modal/CreateBlogModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modal/CreateBlogModal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reducers/blogItem.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reducers/blogItem.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reducers/comments.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reducers/comments.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reducers/errors.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reducers/errors.js" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="ProjectId" id="1R2ylqoLA88e7wabOhV7USy75MQ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../youtube_app" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.editor" />
   </component>
   <component name="RunDashboard">
@@ -37,10 +66,22 @@
       <option name="presentableId" value="Default" />
       <updated>1568879638921</updated>
       <workItem from="1568879641030" duration="52538000" />
+      <workItem from="1569406668190" duration="506000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

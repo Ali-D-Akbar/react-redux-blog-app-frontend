@@ -10,18 +10,24 @@ class CreateForm extends Component {
     state = {
         title: "",
         description: "",
+        image: ""
     };
 
     onChange = e => this.setState({[e.target.name]: e.target.value});
 
     onSubmit = e => {
         e.preventDefault();
-        const {title, description} = this.state;
-        const blogItem = {title, description};
-        this.props.addBlog(blogItem);
+        console.log(this.state);
+        let form_data = new FormData();
+        form_data.append('title', this.state.title);
+        form_data.append('description', this.state.description);
+        this.props.addBlog(form_data);
+
+
         this.setState({
             title: "",
             description: "",
+            image: ""
         });
     };
 

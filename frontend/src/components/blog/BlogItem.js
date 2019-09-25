@@ -5,6 +5,7 @@ import {deleteBlog, getBlogItem} from "../../actions/blogList";
 import UpdateForm from "./UpdateForm";
 import {Redirect} from "react-router-dom";
 import {addComment} from "../../actions/comment";
+import CreateBlogModal from "../modal/CreateBlogModal";
 
 
 class BlogItem extends Component {
@@ -18,12 +19,22 @@ class BlogItem extends Component {
 
     state = {
         commentDescription: "",
+        replyDescription: "",
         redirect: false,
+        modalShow: false
+    };
+
+    showModal = () => {
+        this.setState({modalShow: true});
+    };
+
+    hideModal = () => {
+        this.setState({modalShow: false});
     };
 
     componentDidMount() {
-        const {id} = this.props.location.props;
-        this.props.getBlogItem(id);
+        const {match: {params}} = this.props;
+        this.props.getBlogItem(params.blogId);
     }
 
     onChange = e => {
@@ -32,9 +43,7 @@ class BlogItem extends Component {
 
     onClick = e => {
         this.props.deleteBlog(this.props.blogItem.id);
-        this.setState({
-            redirect: true
-        });
+        setTimeout(() => this.setState({redirect: true}), 1000);
     };
 
     postComment = e => {
@@ -46,9 +55,25 @@ class BlogItem extends Component {
         };
         this.props.addComment(comment);
         this.setState({
-            description: "",
+            commentDescription: "",
         });
+        setTimeout(() => this.setState({redirect: true}), 1000);
+    };
 
+    postReply = parentId => e => {
+        e.preventDefault();
+        const {replyDescription} = this.state;
+        const reply = {
+            'parent': parentId,
+            'blog': this.props.blogItem.url,
+            'description': replyDescription
+        };
+        console.log(reply);
+        this.props.addComment(reply);
+        this.setState({
+            replyDescription: "",
+        });
+        setTimeout(() => this.setState({redirect: true}), 1000);
     };
 
     render() {
@@ -66,17 +91,25 @@ class BlogItem extends Component {
                 </div>
             );
             const commentField = (
-                <form onSubmit={this.postComment}>
-                        <input
+                <div>
+                    <button className="btn btn-primary" type="button" onClick={this.showModal}>
+                        Edit
+                    </button>
+
+                    <form onSubmit={this.postComment}>
+                        <textarea
                             className="form-control"
-                            type="text"
                             value={this.state.commentDescription}
                             name="commentDescription"
                             placeholder="Add a Comment"
                             onChange={this.onChange}
                             required
                         />
+                        <button className="btn btn-primary" type="submit">
+                            Post
+                        </button>
                     </form>
+                </div>
             );
 
             let isOwner = false;
@@ -93,28 +126,63 @@ class BlogItem extends Component {
                     <div>
                         <div className="card" key={this.props.blogItem.id}>
                             <div className="card-body" key={this.props.blogItem.id}>
-                                <p className="card-text">Posted by: {this.props.blogItem.owner}</p>
                                 <h5 className="card-title">Title: {this.props.blogItem.title}</h5>
-                                <h6 className="card-subtitle mb-2 text-muted">{this.props.blogItem.description}</h6>
-                                <p className="card-text">{(new Date(this.props.blogItem.created)).toString()}</p>
+                                <h6 className="card-text">{this.props.blogItem.description}</h6>
+                                {this.props.blogItem.image ?
+                                    <img className="card-img-top"
+                                         src={this.props.blogItem.image}
+                                         alt="new"
+                                    />
+                                    : null
+                                }
+                                <h6 className="card-text">Posted by: {this.props.blogItem.owner}</h6>
+                                <p className="card-subtitle mb-2 text-muted">{(new Date(this.props.blogItem.created)).toString()}</p>
 
-                                {isAuthenticated? commentField: null}
 
-                                {isOwner ? authLinks : null}
+                                {isAuthenticated ? commentField : null}
+                                <h4 className="card-title">Comments: </h4>
+                                {this.props.blogItem.comment.map((comment) => (
+                                    <div className="card">
+                                        <div className="card-body" key={comment.id}>
+                                            <h5 className="card-title">{comment.description}</h5>
+                                            <p className="card-text">By: {comment.owner}</p>
+                                            <h6 className="card-subtitle mb-2 text-muted">{(new Date(comment.created)).toString()}</h6>
+                                            <form onSubmit={this.postReply(comment.id)}>
+                                                <textarea
+                                                    className="form-control"
+                                                    value={this.state.replyDescription}
+                                                    name="replyDescription"
+                                                    placeholder="Add a Reply"
+                                                    onChange={this.onChange}
+                                                    required
+                                                />
+                                                <button className="btn btn-primary" type="submit">
+                                                    Post
+                                                </button>
+                                            </form>
+                                            {comment.reply.map((reply) => (
+                                                <div className="card">
+                                                    <div className="card-body" key={reply.id}>
+                                                        <h5 className="card-title">{reply.description}</h5>
+                                                        <p className="card-text">By: {reply.owner}</p>
+                                                        <h6 className="card-subtitle mb-2 text-muted">{(new Date(reply.created)).toString()}</h6>
+                                                    </div>
+                                                </div>
+                                            ))
+
+                                            }
+                                        </div>
+                                    </div>
+
+                                ))
+                                }
+
+
+                                <CreateBlogModal show={this.state.modalShow} handleClose={this.hideModal} title="Edit">
+                                    {isOwner ? authLinks : null}
+                                </CreateBlogModal>
                             </div>
                         </div>
-
-
-                        {this.props.blogItem.comment.map((comment) => (
-                            <div className="card" key={comment.id}>
-                                <div className="card-body" key={comment.id}>
-                                    <h5 className="card-title">{comment.description}</h5>
-                                    <h6 className="card-subtitle mb-2 text-muted">By: {comment.owner}</h6>
-                                    <p className="card-text">{(new Date(comment.created)).toString()}</p>
-                                </div>
-                            </div>
-                        ))
-                        }
 
                     </div>
                 </Fragment>

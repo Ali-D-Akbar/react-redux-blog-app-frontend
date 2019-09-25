@@ -1,3 +1,2 @@
-export const GET_COMMENTS = "GET_COMMENTS";
 export const ADD_COMMENT = "ADD_COMMENT";
 export const CLEAR_COMMENTS = "CLEAR_COMMENTS";
