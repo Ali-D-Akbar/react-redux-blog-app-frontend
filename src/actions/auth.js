@@ -12,16 +12,26 @@ import {
 } from "../actionTypes/auth";
 import serverData from '../config';
 
-export const tokenConfig = (getState) => {
+export const tokenConfig = (getState, isMultipart=false) => {
     // Get token from state
     const token = getState().auth.token;
 
     // Headers
-    let config = {
-        headers: {
-            "Content-Type": "application/json"
-        }
-    };
+    let config;
+    if (isMultipart) {
+        config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        };
+    }
+    else {
+        config = {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+    }
 
     // If token, add to headers config
     if (token) {
@@ -49,7 +59,7 @@ export const loadUser = () => (dispatch, getState) => {
     }
 
     axios
-        .get(serverData.django_server + "/api/auth/user", config)
+        .get(serverData.django_server + "/api/auth/user", tokenConfig(getState))
         .then(res => {
             dispatch({
                 type: USER_LOADED,

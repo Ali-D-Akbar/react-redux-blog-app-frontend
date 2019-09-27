@@ -9,7 +9,8 @@ import {login} from "../../actions/auth";
 export class Login extends Component {
     static propTypes = {
         login: PropTypes.func.isRequired,
-        isAuthenticated: PropTypes.bool
+        isAuthenticated: PropTypes.bool,
+        errors: PropTypes.object.isRequired,
     };
     state = {
         username: '',
@@ -55,6 +56,9 @@ export class Login extends Component {
                                 required
                             />
                         </div>
+                        {this.props.errors.msg.non_field_errors ?
+                            <span className='error'>{this.props.errors.msg.non_field_errors}</span>
+                            : null}
                         <div className="form-group">
                             <button type="submit" className="btn btn-primary">
                                 Login
@@ -71,7 +75,8 @@ export class Login extends Component {
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    errors: state.errors,
 });
 export default connect(
     mapStateToProps,

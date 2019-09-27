@@ -26,11 +26,7 @@ class BlogList extends Component {
 
     search = e => {
         e.preventDefault();
-        if (this.state.type === "title") {
-            this.props.searchBlogs(`?title=${this.state.keyword}`);
-        } else {
-            this.props.searchBlogs(`?description=${this.state.keyword}`);
-        }
+        this.props.searchBlogs(`?keyword=${this.state.keyword}`);
     };
 
     componentDidMount() {
@@ -71,7 +67,7 @@ class BlogList extends Component {
             <div>
                 <form className="form-inline" onSubmit={this.search}>
                     <input
-                        className="form-control col-sm-4"
+                        className="form-control col-sm-10"
                         type="text"
                         value={this.state.keyword}
                         name="keyword"
@@ -79,12 +75,8 @@ class BlogList extends Component {
                         onChange={this.onChange}
                         required
                     />
-                    <select className="form-control col-sm-2" name="type" onChange={this.onChange}>
-                        <option value="title">title</option>
-                        <option value="content">content</option>
-                    </select>
                     <input
-                        className="btn btn-primary"
+                        className="btn btn-primary col-sm-2"
                         type="submit"
                     />
 
@@ -101,9 +93,6 @@ class BlogList extends Component {
                     <div className="card" key={blogItem.id}>
                         <Link to={{
                             pathname: `/blogitem/${blogItem.id}`,
-                            props: {
-                                id: blogItem.id
-                            }
                         }} className="nav-link">
                             <div className="card-body clickable" key={blogItem.id}>
                                 <h5 className="card-title">Title: {blogItem.title}</h5>

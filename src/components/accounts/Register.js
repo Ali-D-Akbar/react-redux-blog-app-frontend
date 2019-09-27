@@ -3,13 +3,15 @@ import {Link, Redirect} from "react-router-dom";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 import {register} from "../../actions/auth";
-import {createMessage} from "../../actions/messages";
+import {returnErrors} from "../../actions/messages";
 import './Register.css'
 
 export class Register extends Component {
     static propTypes = {
         register: PropTypes.func.isRequired,
-        isAuthenticated: PropTypes.bool
+        isAuthenticated: PropTypes.bool,
+        errors: PropTypes.object.isRequired,
+        returnErrors: PropTypes.func.isRequired,
     };
     state = {
         username: "",
@@ -37,7 +39,7 @@ export class Register extends Component {
         if (validateForm(this.state.errors)) {
             const {username, email, password, password2} = this.state;
             if (password !== password2) {
-                this.props.createMessage({passwordNotMatch: "Passwords do not match"});
+                this.props.returnErrors({passwordDoesNotMatch: "Passwords do not match"});
             } else {
                 const newUser = {
                     username,
@@ -111,6 +113,9 @@ export class Register extends Component {
                             />
                             {errors.username.length > 0 &&
                             <span className='error'>{errors.username}</span>}
+                            {this.props.errors.msg.username ?
+                                <span className='error'>{this.props.errors.msg.username}</span>
+                                : null}
                         </div>
                         <div className="form-group">
                             <label>Email</label>
@@ -150,6 +155,10 @@ export class Register extends Component {
                             />
                             {errors.password2.length > 0 &&
                             <span className='error'>{errors.password2}</span>}
+                            {this.props.errors.msg.passwordDoesNotMatch ?
+                                <span className='error'>{this.props.errors.msg.passwordDoesNotMatch}</span>
+                                : null}
+
                         </div>
                         <div className="form-group">
                             <button type="submit" className="btn btn-primary">
@@ -167,10 +176,11 @@ export class Register extends Component {
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    errors: state.errors,
 });
 
 export default connect(
     mapStateToProps,
-    {register, createMessage}
+    {register, returnErrors}
 )(Register);
