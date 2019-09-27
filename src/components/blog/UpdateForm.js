@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 import {updateBlog} from "../../actions/blogList";
-import {Redirect} from "react-router-dom";
 
 class UpdateForm extends Component {
     static propTypes = {
@@ -15,7 +14,7 @@ class UpdateForm extends Component {
         id: this.props.id,
         title: this.props.title,
         description: this.props.description,
-        redirect: false
+        reload: false
     };
 
     onChange = e => this.setState({[e.target.name]: e.target.value});
@@ -29,13 +28,13 @@ class UpdateForm extends Component {
             title: "",
             description: ""
         });
-        setTimeout(() => this.setState({ redirect: true }), 1000);
+        setTimeout(() => this.setState({reload: true}), 1000);
     };
 
     render() {
         const {title, description} = this.state;
-        if (this.state.redirect) {
-            return <Redirect to='/'/>
+        if (this.state.reload) {
+            window.location.reload();
         }
         return (
 

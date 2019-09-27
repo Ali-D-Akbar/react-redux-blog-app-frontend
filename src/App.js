@@ -10,12 +10,6 @@ import Register from "./components/accounts/Register";
 import Header from "./components/layout/Header";
 import {loadUser} from "./actions/auth";
 import BlogItem from "./components/blog/BlogItem";
-import {Alerts} from "./components/layout/Alerts";
-
-const alertOptions = {
-    timeout: 3000,
-    position: 'top center'
-};
 
 class App extends Component {
     componentDidMount() {
