@@ -3,11 +3,27 @@ import {Link} from 'react-router-dom';
 import {logout} from "../../actions/auth";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
+import weblog from '../../../public/weblog.png'
+import CreateForm from "../blog/CreateForm";
+import CreateBlogModal from "../modal/CreateBlogModal";
+import './Header.css'
 
 class Header extends Component {
     static propTypes = {
         auth: PropTypes.object.isRequired,
         logout: PropTypes.func.isRequired
+    };
+
+    state = {
+        modalShow: false,
+    };
+
+    showModal = () => {
+        this.setState({modalShow: true});
+    };
+
+    hideModal = () => {
+        this.setState({modalShow: false});
     };
 
     render() {
@@ -16,13 +32,16 @@ class Header extends Component {
         const authLinks = (
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
                 <span className="navbar-text mr-3">
-                    <strong>{user ? `Welcome ${user.username}` : ""}</strong>
+                    <strong>{this.props.messages.login ? `${this.props.messages.login}` : ""}</strong>
                 </span>
                 <li className="nav-item">
-                    <button
-                        onClick={this.props.logout}
-                        className="nav-link btn btn-info btn-sm text-light"
-                    >
+                    <button className="nav-link btn btn-secondary btn-sm text-light" type="button"
+                            onClick={this.showModal}>
+                        Add New Blog
+                    </button>
+                </li>
+                <li className="nav-item">
+                    <button onClick={this.props.logout} className="nav-link btn btn-info btn-sm text-light">
                         Logout
                     </button>
                 </li>
@@ -45,7 +64,10 @@ class Header extends Component {
         );
 
         return (
-            <nav className="navbar navbar-expand-sm navbar-light bg-light">
+            <nav className="navbar navbar-expand-sm navbar-light blue">
+                <CreateBlogModal show={this.state.modalShow} handleClose={this.hideModal} title="Add New Blog">
+                    <CreateForm/>
+                </CreateBlogModal>
                 <div className="container">
                     <button
                         className="navbar-toggler"
@@ -60,7 +82,11 @@ class Header extends Component {
                     </button>
                     <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
                         <a className="navbar-brand" href="#">
-                            Web Blog
+                            <img height="50"
+                                 width="100"
+                                 src={weblog}
+                                 alt="webblog"
+                            />
                         </a>
                     </div>
                     {isAuthenticated ? authLinks : guestLinks}
@@ -71,7 +97,8 @@ class Header extends Component {
 }
 
 const mapStateToProps = state => ({
-    auth: state.auth
+    auth: state.auth,
+    messages: state.messages,
 });
 
 export default connect(

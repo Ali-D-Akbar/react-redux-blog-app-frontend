@@ -14,20 +14,30 @@ class UpdateForm extends Component {
         id: this.props.id,
         title: this.props.title,
         description: this.props.description,
+        image: "",
         reload: false
     };
 
     onChange = e => this.setState({[e.target.name]: e.target.value});
 
+    handleImageChange = (e) => {
+        this.setState({
+            image: e.target.files[0]
+        })
+    };
+
     onSubmit = e => {
         e.preventDefault();
-        const {title, description} = this.state;
-        const blogItem = {title, description};
-        this.props.updateBlog(this.state.id, blogItem);
-        this.setState({
-            title: "",
-            description: ""
-        });
+        let form_data = new FormData();
+        form_data.append('title', this.state.title);
+        form_data.append('description', this.state.description);
+        if (this.state.image) {
+            form_data.append('image', this.state.image, this.state.image.name);
+            this.props.updateBlog(this.state.id, form_data, true);
+        } else {
+            this.props.updateBlog(this.state.id, form_data);
+        }
+
         setTimeout(() => this.setState({reload: true}), 1000);
     };
 
@@ -61,6 +71,15 @@ class UpdateForm extends Component {
                             value={description}
                             required
                         />
+                    </div>
+                    <div className="form-group">
+                        <input
+                            className="btn"
+                            type="file"
+                            name="image"
+                            onChange={this.handleImageChange}
+                            accept="image/*"/>
+                        <label>(Best Size: 1024x600)</label>
                     </div>
                     <div className="form-group">
                         <button type="submit" className="btn btn-primary">

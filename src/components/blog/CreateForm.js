@@ -82,6 +82,7 @@ class CreateForm extends Component {
                             name="image"
                             onChange={this.handleImageChange}
                             accept="image/*"/>
+                        <label>(Best Size: 1024x600)</label>
                     </div>
                     {this.props.errors.msg.description ?
                         <span className='error'>Description is blank! {this.props.errors.msg.description}</span>
@@ -91,10 +92,9 @@ class CreateForm extends Component {
                         <span className='success'>{this.props.messages.addBlog}</span>
                         : null}
 
-
                     <div className="form-group">
                         <button type="submit" className="btn btn-primary">
-                            Post
+                            Publish
                         </button>
                     </div>
                 </form>

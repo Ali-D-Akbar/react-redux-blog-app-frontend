@@ -8,3 +8,8 @@ li {
 #page-numbers {
     list-style: none;
 }
+
+.clickable:hover {
+    cursor: pointer;
+    background: lavender;
+}

@@ -102,7 +102,7 @@ export class Register extends Component {
                     <h2 className="text-center">Register</h2>
                     <form onSubmit={this.onSubmit}>
                         <div className="form-group">
-                            <label>Username</label>
+                            <label>Username*</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -118,7 +118,7 @@ export class Register extends Component {
                                 : null}
                         </div>
                         <div className="form-group">
-                            <label>Email</label>
+                            <label>Email*</label>
                             <input
                                 type="email"
                                 className="form-control"
@@ -131,7 +131,7 @@ export class Register extends Component {
                             <span className='error'>{errors.email}</span>}
                         </div>
                         <div className="form-group">
-                            <label>Password</label>
+                            <label>Password*</label>
                             <input
                                 type="password"
                                 className="form-control"
@@ -144,7 +144,7 @@ export class Register extends Component {
                             <span className='error'>{errors.password}</span>}
                         </div>
                         <div className="form-group">
-                            <label>Confirm Password</label>
+                            <label>Confirm Password*</label>
                             <input
                                 type="password"
                                 className="form-control"
