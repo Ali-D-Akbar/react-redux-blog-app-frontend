@@ -54,7 +54,7 @@ class CreateForm extends Component {
             <div className="card card-body mt-4 mb-4">
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label>Title</label>
+                        <label>Title*</label>
                         <input
                             className="form-control"
                             type="text"
@@ -65,7 +65,7 @@ class CreateForm extends Component {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Description</label>
+                        <label>Description*</label>
                         <textarea
                             className="form-control"
                             rows="10"
@@ -81,8 +81,10 @@ class CreateForm extends Component {
                             type="file"
                             name="image"
                             onChange={this.handleImageChange}
-                            accept="image/*"/>
-                        <label>(Best Size: 1024x600)</label>
+                            accept="image/*"
+                            required
+                        />
+                        <label>*(Best Size: 1024 x 600)</label>
                     </div>
                     {this.props.errors.msg.description ?
                         <span className='error'>Description is blank! {this.props.errors.msg.description}</span>

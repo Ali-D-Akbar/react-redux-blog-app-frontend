@@ -34,11 +34,11 @@ export class Login extends Component {
                     <h2 className="text-center">Login</h2>
                     <form onSubmit={this.onSubmit}>
                         {this.props.errors.msg.non_field_errors ?
-                            <span className='error'>{this.props.errors.msg.non_field_errors}</span>
+                            <span className='alert alert-danger'>{this.props.errors.msg.non_field_errors}</span>
                             : null}
 
                         <div className="form-group">
-                            <label>Username*</label>
+                            <label className="mt-2">Username*</label>
                             <input
                                 type="text"
                                 className="form-control"

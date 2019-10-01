@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import {deleteBlog, getBlogItem, getBlogList, searchBlogs} from "../../actions/blogList";
 import './BlogList.css';
 import defaultImage from '../../../public/default.png'
-import ReactPaginate from 'react-paginate';
 
 class BlogList extends Component {
     static propTypes = {
@@ -18,7 +17,7 @@ class BlogList extends Component {
         keyword: "",
         type: "title",
         currentPage: 1,
-        blogsPerPage: 5,
+        blogsPerPage: 3,
         blogId: null,
         redirect: false,
     };
@@ -35,6 +34,25 @@ class BlogList extends Component {
     componentDidMount() {
         this.props.getBlogList();
     }
+
+    nextPage = (event) => {
+        const {currentPage, blogsPerPage} = this.state;
+        if (currentPage + 1 <= Math.ceil(this.props.blogList.length / blogsPerPage)) {
+            this.setState({
+                currentPage: currentPage + 1
+            });
+        }
+    };
+
+    previousPage = (event) => {
+        const {currentPage} = this.state;
+        if (currentPage - 1 >= 1) {
+            this.setState({
+                currentPage: currentPage - 1
+            });
+        }
+    };
+
 
     handleClick = (event) => {
         this.setState({
@@ -64,56 +82,53 @@ class BlogList extends Component {
             pageNumbers.push(i);
         }
 
-        const renderPageNumbers = pageNumbers.map(number => {
-            return (
-                <li
-                    key={number}
-                    id={number}
-                    onClick={this.handleClick}
-                >
-                    {number}
-                </li>
-            );
-        });
-
         return (
             <div>
-                <form className="my-3 search form-inline" onSubmit={this.search}>
-                    <select className="form-control col-sm-2">
-                        <option value="newest">Newest</option>
-                        <option value="ascending">A-Z</option>
-                        <option value="descending">Z-A</option>
-                    </select>
-                    <input
-                        className="form-control col-sm-8"
-                        type="text"
-                        value={this.state.keyword}
-                        name="keyword"
-                        placeholder="Find Blog Posts"
-                        onChange={this.onChange}
-                        required
-                    />
-                    <button className="btn btn-primary col-sm-2" type="submit"><i className="fas fa-search"/></button>
+                <h4 className="alert-success">{this.props.messages.login ? `${this.props.messages.login}` : ""}</h4>
+                <form className="my-3 search" onSubmit={this.search}>
 
+                    <div className="row">
+                        <div className="col-2">
+                            <select className="rounded form-control">
+                                <option value="newest">Newest</option>
+                                <option value="ascending">A-Z</option>
+                                <option value="descending">Z-A</option>
+                            </select>
+                        </div>
+                        <div className="col-3"> </div>
+                        <div className="col-6">
+                            <input
+                                className="rounded form-control"
+                                type="text"
+                                value={this.state.keyword}
+                                name="keyword"
+                                placeholder="Find Blog Posts"
+                                onChange={this.onChange}
+                            />
+                        </div>
+                        <button className="rounded btn btn-primary" type="submit"><i
+                            className="fas fa-search"/></button>
+
+                    </div>
                 </form>
 
                 <h1>Blog Posts</h1>
 
                 {currentBlogList.map((blogItem) => (
-                    <div className="m-4 card card-body clickable" onClick={this.showBlogItem(blogItem.id)}>
+                    <div className="m-4 rounded card card-body clickable" onClick={this.showBlogItem(blogItem.id)}>
 
                         <div className="row">
                             <div className="col-md-5">
                                 <div className="post-thumbnail">
                                     {blogItem.image ?
                                         <img className="card-img-top"
-                                             height="300"
+                                             height="250"
                                              src={blogItem.image}
                                              alt="new"
                                         />
                                         :
                                         <img className="card-img-top"
-                                             height="300"
+                                             height="250"
                                              src={defaultImage}
                                              alt="new"
                                         />
@@ -142,7 +157,7 @@ class BlogList extends Component {
                                 <div className="card-text">
                                     {blogItem.description.length > 200 ? `${blogItem.description.substring(0, 400)}...` : blogItem.description}
                                 </div>
-                                <button className="btn btn-primary float-right bottom"
+                                <button className="rounded btn btn-primary float-right bottom"
                                         onClick={this.showBlogItem(blogItem.id)}>Read More
                                 </button>
                             </div>
@@ -150,10 +165,27 @@ class BlogList extends Component {
                     </div>
                 ))}
 
-                <ul id="page-numbers">
-                    Page: <br/>
-                    {renderPageNumbers}
-                </ul>
+                <div className="ml-2 container row">
+                    <a className="page-numbers previous rounded col-sm1"
+                       onClick={this.previousPage}>&laquo; Previous</a>
+                    <div className="col-sm text-center">
+                        {
+                            pageNumbers.map(number => {
+                                return (
+                                    <a className="page-numbers"
+                                       key={number}
+                                       id={number}
+                                       onClick={this.handleClick}>
+
+                                        {number}
+                                    </a>
+                                );
+                            })
+                        }
+                    </div>
+                    <a className="page-numbers mr-3 rounded next float-right col-sm1"
+                       onClick={this.nextPage}>Next &raquo;</a>
+                </div>
             </div>
 
         );
@@ -162,6 +194,7 @@ class BlogList extends Component {
 
 const mapStateToProps = state => ({
     blogList: state.blogList.blogList,
+    messages: state.messages
 });
 
 export default connect(mapStateToProps, {getBlogList, deleteBlog, getBlogItem, searchBlogs})(BlogList);

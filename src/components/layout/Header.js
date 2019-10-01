@@ -31,17 +31,14 @@ class Header extends Component {
 
         const authLinks = (
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
-                <span className="navbar-text mr-3">
-                    <strong>{this.props.messages.login ? `${this.props.messages.login}` : ""}</strong>
-                </span>
                 <li className="nav-item">
-                    <button className="nav-link btn btn-secondary btn-sm text-light" type="button"
+                    <button className="btn btn-secondary" type="button"
                             onClick={this.showModal}>
                         Add New Blog
                     </button>
                 </li>
                 <li className="nav-item">
-                    <button onClick={this.props.logout} className="nav-link btn btn-info btn-sm text-light">
+                    <button onClick={this.props.logout} className="btn btn-info">
                         Logout
                     </button>
                 </li>
@@ -50,14 +47,14 @@ class Header extends Component {
 
         const guestLinks = (
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
-                <li className="nav-item">
+                <li className="nav-item mr-2">
                     <Link to="/register" className="nav-link">
-                        Register
+                        <button className="btn btn-secondary">Register</button>
                     </Link>
                 </li>
                 <li className="nav-item">
                     <Link to="/login" className="nav-link">
-                        Login
+                        <button className="btn btn-secondary">Login</button>
                     </Link>
                 </li>
             </ul>
@@ -98,7 +95,6 @@ class Header extends Component {
 
 const mapStateToProps = state => ({
     auth: state.auth,
-    messages: state.messages,
 });
 
 export default connect(

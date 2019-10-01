@@ -109,6 +109,7 @@ export const logout = () => (dispatch, getState) => {
             dispatch({
                 type: LOGOUT_SUCCESS
             });
+            dispatch(createMessage({login: null}));
         })
         .catch(err => {
             dispatch(returnErrors(err.response.data, err.response.status));

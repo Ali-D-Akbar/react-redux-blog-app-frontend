@@ -149,7 +149,7 @@ class BlogItem extends Component {
                         </div>
 
                         {this.props.messages.vote ?
-                            <p className='mt-4 error'>{this.props.messages.vote}</p>
+                            <p className='mt-4 alert-danger'>{this.props.messages.vote}</p>
                             : null}
                         {this.props.blogItem.image ?
                             <img className="mt-4 img-fluid rounded"

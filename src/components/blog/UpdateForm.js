@@ -51,7 +51,7 @@ class UpdateForm extends Component {
             <div className="card card-body mt-4 mb-4">
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label>Title</label>
+                        <label>Title*</label>
                         <input
                             className="form-control"
                             type="text"
@@ -62,7 +62,7 @@ class UpdateForm extends Component {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Description</label>
+                        <label>Description*</label>
                         <textarea
                             className="form-control"
                             rows="10"
@@ -78,8 +78,9 @@ class UpdateForm extends Component {
                             type="file"
                             name="image"
                             onChange={this.handleImageChange}
-                            accept="image/*"/>
-                        <label>(Best Size: 1024x600)</label>
+                            accept="image/*"
+                        />
+                        <label>*(Best Size: 1024 x 600)</label>
                     </div>
                     <div className="form-group">
                         <button type="submit" className="btn btn-primary">
