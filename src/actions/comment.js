@@ -1,12 +1,12 @@
 import axios from 'axios';
-import {tokenConfig} from "./auth";
 import serverData from '../config';
+import {tokenConfig} from "./auth";
 import {returnErrors} from "./messages";
 
 
 //ADD_COMMENT
 export const addComment = comment => (dispatch, getState) => {
-    axios.post(serverData.django_server + serverData.comment, comment, tokenConfig(getState))
+    axios.post(serverData.django_server + "/api/comment/", comment, tokenConfig(getState))
         .catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
 

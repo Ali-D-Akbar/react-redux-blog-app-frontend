@@ -1,16 +1,18 @@
 import React, {Component} from 'react';
-import Dashboard from './components/blog/Dashboard.js';
-import {HashRouter as Router, Route, Switch} from "react-router-dom";
 import {Provider} from 'react-redux';
-import store from './store';
+import {HashRouter as Router, Route, Switch} from "react-router-dom";
+import {loadUser} from "./actions/auth";
+import './App.css'
 
 import Login from "./components/accounts/Login"
 import Register from "./components/accounts/Register";
-import Header from "./components/layout/Header";
-import {loadUser} from "./actions/auth";
 import BlogItem from "./components/blog/BlogItem";
+import Dashboard from './components/blog/Dashboard.js';
 import Footer from "./components/layout/Footer";
-import './App.css'
+import Header from "./components/layout/Header";
+
+// import Header from "/components/layout/Header";
+import store from './store';
 
 class App extends Component {
     componentDidMount() {

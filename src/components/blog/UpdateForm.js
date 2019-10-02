@@ -1,8 +1,8 @@
+import PropTypes from "prop-types";
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import PropTypes from "prop-types";
-import {updateBlog} from "../../actions/blogList";
 import {Redirect} from "react-router-dom";
+import {updateBlog} from "../../actions/blogList";
 
 class UpdateForm extends Component {
     static propTypes = {
@@ -70,7 +70,6 @@ class UpdateForm extends Component {
         }
         const {title, description} = this.state;
         return (
-
             <div className="card card-body mt-4 mb-4">
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">

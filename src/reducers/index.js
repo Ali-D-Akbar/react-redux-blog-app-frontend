@@ -1,9 +1,9 @@
 import {combineReducers} from 'redux';
-import blogList from './blogList'
 import auth from './auth'
+import blogItem from './blogItem';
+import blogList from './blogList'
 import errors from "./errors";
 import messages from "./messages";
-import blogItem from './blogItem';
 
 export default combineReducers({
     blogList,

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {createMessage, returnErrors} from "./messages";
 import {
     AUTH_ERROR,
     LOGIN_FAIL,
@@ -11,6 +10,7 @@ import {
     USER_LOADING
 } from "../actionTypes/auth";
 import serverData from '../config';
+import {createMessage, returnErrors} from "./messages";
 
 export const tokenConfig = (getState, isMultipart = false) => {
     // Get token from state
