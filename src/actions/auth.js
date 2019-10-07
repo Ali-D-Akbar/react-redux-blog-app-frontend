@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {returnErrors} from "./messages";
+import {createMessage, returnErrors} from "./messages";
 import {
     AUTH_ERROR,
     LOGIN_FAIL,
@@ -12,7 +12,7 @@ import {
 } from "../actionTypes/auth";
 import serverData from '../config';
 
-export const tokenConfig = (getState, isMultipart=false) => {
+export const tokenConfig = (getState, isMultipart = false) => {
     // Get token from state
     const token = getState().auth.token;
 
@@ -24,8 +24,7 @@ export const tokenConfig = (getState, isMultipart=false) => {
                 'content-type': 'multipart/form-data'
             }
         };
-    }
-    else {
+    } else {
         config = {
             headers: {
                 "Content-Type": "application/json"
@@ -92,6 +91,7 @@ export const login = (username, password) => dispatch => {
                 type: LOGIN_SUCCESS,
                 payload: res.data
             });
+            dispatch(createMessage({login: `Welcome ${username.charAt(0).toUpperCase() + username.slice(1)} to the weblog. Checkout our blog posts!`}));
         })
         .catch(err => {
             dispatch(returnErrors(err.response.data, err.response.status));
@@ -109,6 +109,7 @@ export const logout = () => (dispatch, getState) => {
             dispatch({
                 type: LOGOUT_SUCCESS
             });
+            dispatch(createMessage({login: null}));
         })
         .catch(err => {
             dispatch(returnErrors(err.response.data, err.response.status));
@@ -135,6 +136,7 @@ export const register = ({username, password, email}) => dispatch => {
                 type: REGISTER_SUCCESS,
                 payload: res.data
             });
+            dispatch(createMessage({login: `Welcome ${username.charAt(0).toUpperCase() + username.slice(1)} to the weblog. Checkout our blog posts!`}));
 
         })
         .catch(err => {

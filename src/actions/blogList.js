@@ -9,10 +9,7 @@ import serverData from '../config';
 export const blogUpvote = (id) => (dispatch, getState) => {
     axios.get(serverData.django_server + `/api/blog/${id}/upvote/`, tokenConfig(getState))
         .then(res => {
-            if (res.data === "already_voted")
-                alert("You've already voted!");
-            else
-                alert("Up voted Successfully!");
+            dispatch(createMessage({vote: res.data}));
         })
         .catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
@@ -21,10 +18,7 @@ export const blogUpvote = (id) => (dispatch, getState) => {
 export const blogDownvote = (id) => (dispatch, getState) => {
     axios.get(serverData.django_server + `/api/blog/${id}/downvote/`, tokenConfig(getState))
         .then(res => {
-            if (res.data === "already_voted")
-                alert("You've already voted!");
-            else
-                alert("Down voted Successfully!");
+            dispatch(createMessage({vote: res.data}));
         })
         .catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
@@ -40,11 +34,28 @@ export const searchBlogs = (keyword) => (dispatch, getState) => {
         }).catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
 
-//GET_BLOGLIST
 
-export const getBlogList = () => (dispatch, getState) => {
-    axios.get(serverData.django_server + '/api/blog/', tokenConfig(getState))
+//GET_BLOGLIST
+export const getBlogList = (url, order) => (dispatch, getState) => {
+    axios.get(serverData.django_server + url, tokenConfig(getState))
         .then(res => {
+            if (order === "ascending") {
+                res.data.results.sort(function (a, b) {
+                    a = a.title.toLowerCase();
+                    b = b.title.toLowerCase();
+
+                    return (a < b) ? -1 : (a > b) ? 1 : 0;
+                });
+
+            } else if (order === "descending") {
+                res.data.results.sort(function (a, b) {
+                    a = a.title.toLowerCase();
+                    b = b.title.toLowerCase();
+
+                    return (a > b) ? -1 : (a > b) ? 1 : 0;
+                });
+            }
+
             dispatch({
                 type: GET_BLOGLIST,
                 payload: res.data
@@ -53,6 +64,7 @@ export const getBlogList = () => (dispatch, getState) => {
                 type: CLEAR_BLOGITEM,
                 payload: null
             });
+
         }).catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
 
@@ -64,6 +76,7 @@ export const getBlogItem = (id) => (dispatch, getState) => {
                 type: GET_BLOGITEM,
                 payload: res.data
             });
+            dispatch(createMessage({}));
             return res;
         }).catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
@@ -84,7 +97,7 @@ export const deleteBlog = (id) => (dispatch, getState) => {
 export const addBlog = (blog, isImage) => (dispatch, getState) => {
     axios.post(serverData.django_server + '/api/blog/', blog, tokenConfig(getState, isImage))
         .then(res => {
-            dispatch(createMessage({addBlog: "Blog Created Successfully!"}));
+            dispatch(createMessage({addBlog: "Blog Post Created Successfully!"}));
             dispatch({
                 type: ADD_BLOG,
                 payload: res.data
@@ -94,8 +107,8 @@ export const addBlog = (blog, isImage) => (dispatch, getState) => {
 };
 
 //UPDATE_BLOG
-export const updateBlog = (id, blog) => (dispatch, getState) => {
-    axios.put(serverData.django_server + `/api/blog/${id}/`, blog, tokenConfig(getState))
+export const updateBlog = (id, blog, isImage) => (dispatch, getState) => {
+    axios.put(serverData.django_server + `/api/blog/${id}/`, blog, tokenConfig(getState, isImage))
         .then(res => {
             dispatch({
                 type: UPDATE_BLOG,

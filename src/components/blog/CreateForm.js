@@ -41,20 +41,37 @@ class CreateForm extends Component {
             description: "",
             image: ""
         });
-        setTimeout(() => this.setState({reload: true}), 1000);
+    };
+
+    saveAsDraft = e => {
+        e.preventDefault();
+        let form_data = new FormData();
+        form_data.append('title', this.state.title);
+        form_data.append('description', this.state.description);
+        form_data.append("draft", "true");
+        if (this.state.image) {
+            form_data.append('image', this.state.image, this.state.image.name);
+            this.props.addBlog(form_data, true);
+        } else {
+            this.props.addBlog(form_data);
+        }
+
+        this.setState({
+            title: "",
+            description: "",
+            image: ""
+        });
     };
 
     render() {
         const {title, description} = this.state;
-        if (this.state.reload) {
-            window.location.reload();
-        }
         return (
 
             <div className="card card-body mt-4 mb-4">
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label>Title</label>
+                        <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are required.</p>
+                        <label>Title *</label>
                         <input
                             className="form-control"
                             type="text"
@@ -62,10 +79,11 @@ class CreateForm extends Component {
                             onChange={this.onChange}
                             value={title}
                             required
+                            aria-required="true"
                         />
                     </div>
                     <div className="form-group">
-                        <label>Description</label>
+                        <label>Description *</label>
                         <textarea
                             className="form-control"
                             rows="10"
@@ -73,16 +91,23 @@ class CreateForm extends Component {
                             onChange={this.onChange}
                             value={description}
                             required
+                            aria-required="true"
                         />
                     </div>
                     <div className="form-group">
+                        *
                         <input
                             className="btn"
                             type="file"
                             name="image"
                             onChange={this.handleImageChange}
-                            accept="image/*"/>
+                            accept="image/*"
+                            required
+                            aria-required="true"
+                        />
+                        <label>(Best Size: 1024 x 600)</label>
                     </div>
+
                     {this.props.errors.msg.description ?
                         <span className='error'>Description is blank! {this.props.errors.msg.description}</span>
                         : null}
@@ -91,12 +116,15 @@ class CreateForm extends Component {
                         <span className='success'>{this.props.messages.addBlog}</span>
                         : null}
 
-
                     <div className="form-group">
-                        <button type="submit" className="btn btn-primary">
-                            Post
+                        <button name="submit" value="submit" type="submit" className="mr-4 btn btn-primary">
+                            Publish
+                        </button>
+                        <button name="draft" value="draft" className="btn btn-primary" onClick={this.saveAsDraft}>
+                            Save As Draft
                         </button>
                     </div>
+
                 </form>
             </div>
         );

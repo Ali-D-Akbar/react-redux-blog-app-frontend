@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Link, Redirect} from 'react-router-dom';
-
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {login} from "../../actions/auth";
@@ -34,8 +33,13 @@ export class Login extends Component {
                 <div className="card card-body mt-5">
                     <h2 className="text-center">Login</h2>
                     <form onSubmit={this.onSubmit}>
+                        {this.props.errors.msg.non_field_errors ?
+                            <span className='alert alert-danger'>{this.props.errors.msg.non_field_errors}</span>
+                            : null}
+
                         <div className="form-group">
-                            <label>Username</label>
+                            <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are required.</p>
+                            <label>Username *</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -43,10 +47,11 @@ export class Login extends Component {
                                 onChange={this.onChange}
                                 value={username}
                                 required
+                                aria-required="true"
                             />
                         </div>
                         <div className="form-group">
-                            <label>Password</label>
+                            <label>Password *</label>
                             <input
                                 type="password"
                                 className="form-control"
@@ -54,11 +59,9 @@ export class Login extends Component {
                                 onChange={this.onChange}
                                 value={password}
                                 required
+                                aria-required="true"
                             />
                         </div>
-                        {this.props.errors.msg.non_field_errors ?
-                            <span className='error'>{this.props.errors.msg.non_field_errors}</span>
-                            : null}
                         <div className="form-group">
                             <button type="submit" className="btn btn-primary">
                                 Login

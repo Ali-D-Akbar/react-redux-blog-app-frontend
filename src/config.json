@@ -1,4 +1,5 @@
 {
-  "django_server": "http://127.0.0.1:8000",
-  "comment": "/api/comment/"
+  "django_server": "https://webblog1234.herokuapp.com",
+  "comment": "/api/comment/",
+  "page_size": 3
 }
