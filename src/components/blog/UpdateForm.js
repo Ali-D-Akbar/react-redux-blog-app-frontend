@@ -2,13 +2,15 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 import {updateBlog} from "../../actions/blogList";
+import {Redirect} from "react-router-dom";
 
 class UpdateForm extends Component {
     static propTypes = {
         updateBlog: PropTypes.func.isRequired,
         id: PropTypes.number,
         title: PropTypes.string,
-        description: PropTypes.string
+        description: PropTypes.string,
+        draft: PropTypes.bool.isRequired,
     };
     state = {
         id: this.props.id,
@@ -41,17 +43,39 @@ class UpdateForm extends Component {
         setTimeout(() => this.setState({reload: true}), 1000);
     };
 
-    render() {
-        const {title, description} = this.state;
-        if (this.state.reload) {
-            window.location.reload();
+    saveAsDraft = e => {
+        e.preventDefault();
+        let form_data = new FormData();
+        form_data.append('title', this.state.title);
+        form_data.append('description', this.state.description);
+        form_data.append("draft", "true");
+        if (this.state.image) {
+            form_data.append('image', this.state.image, this.state.image.name);
+            this.props.updateBlog(this.state.id, form_data, true);
+        } else {
+            this.props.updateBlog(this.state.id, form_data);
         }
+
+        this.setState({
+            title: "",
+            description: "",
+            image: ""
+        });
+        setTimeout(() => this.setState({reload: true}), 1000);
+    };
+
+    render() {
+        if (this.state.reload) {
+            return <Redirect to="/"/>;
+        }
+        const {title, description} = this.state;
         return (
 
             <div className="card card-body mt-4 mb-4">
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <label>Title*</label>
+                        <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are required.</p>
+                        <label>Title *</label>
                         <input
                             className="form-control"
                             type="text"
@@ -59,10 +83,11 @@ class UpdateForm extends Component {
                             onChange={this.onChange}
                             value={title}
                             required
+                            aria-required="true"
                         />
                     </div>
                     <div className="form-group">
-                        <label>Description*</label>
+                        <label>Description *</label>
                         <textarea
                             className="form-control"
                             rows="10"
@@ -70,9 +95,11 @@ class UpdateForm extends Component {
                             onChange={this.onChange}
                             value={description}
                             required
+                            aria-required="true"
                         />
                     </div>
                     <div className="form-group">
+                        *
                         <input
                             className="btn"
                             type="file"
@@ -80,12 +107,18 @@ class UpdateForm extends Component {
                             onChange={this.handleImageChange}
                             accept="image/*"
                         />
-                        <label>*(Best Size: 1024 x 600)</label>
+                        <label>(Best Size: 1024 x 600)</label>
                     </div>
                     <div className="form-group">
-                        <button type="submit" className="btn btn-primary">
-                            Post
+                        <button type="submit" className="mr-4 rounded btn btn-primary">
+                            Publish
                         </button>
+                        {this.props.draft ?
+                            <button name="draft" value="draft" className="btn btn-primary" onClick={this.saveAsDraft}>
+                                Save As Draft
+                            </button>
+                            : null
+                        }
                     </div>
                 </form>
             </div>

@@ -4,6 +4,10 @@
     padding: 8px 16px;
 }
 
+.current {
+    background-color: #4CAF50;
+}
+
 .clickable:hover {
     cursor: pointer;
     background: lavender;

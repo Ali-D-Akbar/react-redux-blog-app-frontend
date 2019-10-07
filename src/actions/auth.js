@@ -91,7 +91,7 @@ export const login = (username, password) => dispatch => {
                 type: LOGIN_SUCCESS,
                 payload: res.data
             });
-            dispatch(createMessage({login: `Welcome ${username}`}));
+            dispatch(createMessage({login: `Welcome ${username.charAt(0).toUpperCase() + username.slice(1)} to the weblog. Checkout our blog posts!`}));
         })
         .catch(err => {
             dispatch(returnErrors(err.response.data, err.response.status));
@@ -136,6 +136,7 @@ export const register = ({username, password, email}) => dispatch => {
                 type: REGISTER_SUCCESS,
                 payload: res.data
             });
+            dispatch(createMessage({login: `Welcome ${username.charAt(0).toUpperCase() + username.slice(1)} to the weblog. Checkout our blog posts!`}));
 
         })
         .catch(err => {

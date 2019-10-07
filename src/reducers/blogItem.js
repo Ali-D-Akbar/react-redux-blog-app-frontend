@@ -9,6 +9,7 @@ export default function (state = initialState, action) {
     switch (action.type) {
         case GET_BLOGITEM:
             return {
+                ...state,
                 blogItem: action.payload
             };
         case CLEAR_BLOGITEM:

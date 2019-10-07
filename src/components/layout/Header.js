@@ -7,6 +7,7 @@ import weblog from '../../../public/weblog.png'
 import CreateForm from "../blog/CreateForm";
 import CreateBlogModal from "../modal/CreateBlogModal";
 import './Header.css'
+import {getBlogList} from "../../actions/blogList";
 
 class Header extends Component {
     static propTypes = {
@@ -18,6 +19,11 @@ class Header extends Component {
         modalShow: false,
     };
 
+    logoutClick = e => {
+        this.props.logout();
+        setTimeout(() => this.props.getBlogList('/api/blog/'), 1000);
+    };
+
     showModal = () => {
         this.setState({modalShow: true});
     };
@@ -27,18 +33,18 @@ class Header extends Component {
     };
 
     render() {
-        const {isAuthenticated, user} = this.props.auth;
+        const {isAuthenticated} = this.props.auth;
 
         const authLinks = (
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
-                <li className="nav-item">
-                    <button className="btn btn-secondary" type="button"
+                <li className="nav-item  mr-2">
+                    <button className="rounded btn btn-secondary" type="button"
                             onClick={this.showModal}>
                         Add New Blog
                     </button>
                 </li>
                 <li className="nav-item">
-                    <button onClick={this.props.logout} className="btn btn-info">
+                    <button onClick={this.logoutClick} className="rounded btn btn-info">
                         Logout
                     </button>
                 </li>
@@ -49,12 +55,16 @@ class Header extends Component {
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
                 <li className="nav-item mr-2">
                     <Link to="/register" className="nav-link">
-                        <button className="btn btn-secondary">Register</button>
+                        <button className="btn btn-secondary">
+                            Register
+                        </button>
                     </Link>
                 </li>
                 <li className="nav-item">
                     <Link to="/login" className="nav-link">
-                        <button className="btn btn-secondary">Login</button>
+                        <button className="btn btn-secondary">
+                            Login
+                        </button>
                     </Link>
                 </li>
             </ul>
@@ -67,7 +77,7 @@ class Header extends Component {
                 </CreateBlogModal>
                 <div className="container">
                     <button
-                        className="navbar-toggler"
+                        className="rounded navbar-toggler"
                         type="button"
                         data-toggle="collapse"
                         data-target="#navbarTogglerDemo01"
@@ -77,12 +87,12 @@ class Header extends Component {
                     >
                         <span className="navbar-toggler-icon"/>
                     </button>
-                    <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
+                    <div className="rounded collapse navbar-collapse" id="navbarTogglerDemo01">
                         <a className="navbar-brand" href="#">
                             <img height="50"
                                  width="100"
                                  src={weblog}
-                                 alt="webblog"
+                                 alt="logo"
                             />
                         </a>
                     </div>
@@ -99,5 +109,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {logout}
+    {logout, getBlogList}
 )(Header);

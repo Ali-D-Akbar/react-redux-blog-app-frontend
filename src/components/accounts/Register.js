@@ -102,8 +102,8 @@ export class Register extends Component {
                     <h2 className="text-center">Register</h2>
                     <form onSubmit={this.onSubmit}>
                         <div className="form-group">
-			    <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are required.</p>
-                            <label>Username*</label>
+                            <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are required.</p>
+                            <label>Username *</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -111,6 +111,7 @@ export class Register extends Component {
                                 onChange={this.onChange}
                                 value={username}
                                 required
+                                aria-required="true"
                             />
                             {errors.username.length > 0 &&
                             <span className='error'>{errors.username}</span>}
@@ -119,7 +120,7 @@ export class Register extends Component {
                                 : null}
                         </div>
                         <div className="form-group">
-                            <label>Email*</label>
+                            <label>Email *</label>
                             <input
                                 type="email"
                                 className="form-control"
@@ -127,12 +128,13 @@ export class Register extends Component {
                                 onChange={this.onChange}
                                 value={email}
                                 required
+                                aria-required="true"
                             />
                             {errors.email.length > 0 &&
                             <span className='error'>{errors.email}</span>}
                         </div>
                         <div className="form-group">
-                            <label>Password*</label>
+                            <label>Password *</label>
                             <input
                                 type="password"
                                 className="form-control"
@@ -140,12 +142,13 @@ export class Register extends Component {
                                 onChange={this.onChange}
                                 value={password}
                                 required
+                                aria-required="true"
                             />
                             {errors.password.length > 0 &&
                             <span className='error'>{errors.password}</span>}
                         </div>
                         <div className="form-group">
-                            <label>Confirm Password*</label>
+                            <label>Confirm Password *</label>
                             <input
                                 type="password"
                                 className="form-control"
@@ -153,6 +156,7 @@ export class Register extends Component {
                                 onChange={this.onChange}
                                 value={password2}
                                 required
+                                aria-required="true"
                             />
                             {errors.password2.length > 0 &&
                             <span className='error'>{errors.password2}</span>}

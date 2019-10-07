@@ -7,6 +7,7 @@ import {addComment, deleteComment} from "../../actions/comment";
 import CreateBlogModal from "../modal/CreateBlogModal";
 import './BlogItem.css';
 import defaultImage from '../../../public/default.png'
+import {Redirect} from "react-router-dom";
 
 class BlogItem extends Component {
     static propTypes = {
@@ -22,9 +23,10 @@ class BlogItem extends Component {
 
     state = {
         commentDescription: "",
-        replyDescription: "",
         reload: false,
-        modalShow: false
+        modalShow: false,
+        deleteModal: false,
+        deleteCommentModal: false,
     };
 
     showModal = () => {
@@ -33,6 +35,14 @@ class BlogItem extends Component {
 
     hideModal = () => {
         this.setState({modalShow: false});
+    };
+
+    showDeleteModal = () => {
+        this.setState({deleteModal: true});
+    };
+
+    hideDeleteModal = () => {
+        this.setState({deleteModal: false});
     };
 
     componentDidMount() {
@@ -46,11 +56,12 @@ class BlogItem extends Component {
 
     deleteComment = commentId => e => {
         this.props.deleteComment(commentId);
-        setTimeout(() => this.setState({reload: true}), 1000);
+        const {match: {params}} = this.props;
+        setTimeout(() => this.props.getBlogItem(params.blogId), 1000);
     };
 
     deleteBlog = e => {
-        this.props.deleteBlog(this.props.blogItem.id);
+        this.props.deleteBlog(this.props.blogItem.slug);
         setTimeout(() => this.setState({reload: true}), 1000);
     };
 
@@ -65,43 +76,45 @@ class BlogItem extends Component {
         this.setState({
             commentDescription: "",
         });
-        setTimeout(() => this.setState({reload: true}), 1000);
+        const {match: {params}} = this.props;
+        setTimeout(() => this.props.getBlogItem(params.blogId), 1000);
     };
 
     postReply = parentId => e => {
         e.preventDefault();
-        const {replyDescription} = this.state;
+        const replyDescription = e.target.elements.replyDescription.value;
         const reply = {
             'parent': parentId,
             'blog': this.props.blogItem.url,
             'description': replyDescription
         };
         this.props.addComment(reply);
-        this.setState({
-            replyDescription: "",
-        });
-        setTimeout(() => this.setState({reload: true}), 1000);
+        const {match: {params}} = this.props;
+        setTimeout(() => this.props.getBlogItem(params.blogId), 1000);
+        e.target.elements.replyDescription.value = "";
     };
+
 
     upvote = id => e => {
         this.props.blogUpvote(id);
-        setTimeout(() => this.setState({reload: true}), 1000);
+        const {match: {params}} = this.props;
+        setTimeout(() => this.props.getBlogItem(params.blogId), 1000);
     };
 
     downvote = id => e => {
         this.props.blogDownvote(id);
-        setTimeout(() => this.setState({reload: true}), 1000);
+        const {match: {params}} = this.props;
+        setTimeout(() => this.props.getBlogItem(params.blogId), 1000);
     };
 
     render() {
-        if (this.state.reload) {
-            window.location.reload();
-        }
+        if (this.state.reload)
+            return <Redirect to="/"/>;
         if (this.props.blogItem) {
             const authLinks = (
                 <div>
-                    <UpdateForm name="Update Blog" title={this.props.blogItem.title} id={this.props.blogItem.id}
-                                description={this.props.blogItem.description}/>
+                    <UpdateForm name="Update Blog" title={this.props.blogItem.title} id={this.props.blogItem.slug}
+                                description={this.props.blogItem.description} draft={this.props.blogItem.draft}/>
                 </div>
             );
             let isOwner = false;
@@ -117,15 +130,16 @@ class BlogItem extends Component {
                     <div className="col-lg-8">
                         <div className="mt-4 row">
                             <div className="col-sm-1">
-                                <i className="arrow up" onClick={this.upvote(this.props.blogItem.id)} title="Vote Up"/>
-                                <div className="count">{this.props.blogItem.votes}</div>
-                                <i className="arrow down" onClick={this.downvote(this.props.blogItem.id)}
+                                <i className="arrow up" onClick={this.upvote(this.props.blogItem.slug)}
+                                   title="Vote Up"/>
+                                <div className="count" title="Total Votes">{this.props.blogItem.votes.total_votes}</div>
+                                <i className="arrow down" onClick={this.downvote(this.props.blogItem.slug)}
                                    title="Vote Down"/>
                             </div>
 
                             <div className="col-sm-7">
                                 <h1>{this.props.blogItem.title}</h1>
-                                <p className="lead">
+                                <p>
                                     Posted by: {this.props.blogItem.owner}
                                 </p>
                                 Posted on: {(new Date(this.props.blogItem.created)).toDateString()}
@@ -134,13 +148,14 @@ class BlogItem extends Component {
                             <div className="col-sm-4">
                                 {isAuthenticated && this.props.auth.user.username === this.props.blogItem.owner ?
                                     <div className="container">
-                                        <button className="float-right btn btn-primary col-sm-6" type="button"
-                                                onClick={this.showModal}>
-                                            Edit
+                                        <button className="rounded btn btn-primary float-right ml-4" type="button"
+                                                onClick={this.showModal} title="Edit">
+                                            <i className="fa fa-pencil"/>
                                         </button>
 
-                                        <button className="float-right btn btn-danger col-sm-6"
-                                                onClick={this.deleteBlog}> Delete
+                                        <button className="rounded btn btn-danger float-right"
+                                                onClick={this.showDeleteModal} title="Delete">
+                                            <i className="fa fa-trash"/>
                                         </button>
                                     </div>
                                     : null
@@ -150,22 +165,25 @@ class BlogItem extends Component {
 
                         {this.props.messages.vote ?
                             <p className='mt-4 alert-danger'>{this.props.messages.vote}</p>
-                            : null}
+                            : null
+                        }
+
                         {this.props.blogItem.image ?
                             <img className="mt-4 img-fluid rounded"
                                  src={this.props.blogItem.image}
-                                 alt=""
+                                 alt={this.props.blogItem.title}
                             />
                             :
                             <img className="mt-4 img-fluid rounded"
                                  src={defaultImage}
-                                 alt=""
+                                 alt={this.props.blogItem.title}
                             />
                         }
 
-                        <br/><br/><br/>
-
-                        <p className="lead" align="justify">{this.props.blogItem.description}</p>
+                        <br/>
+                        <div className="mt-4 lead">{this.props.blogItem.description.split('\n').map(paragraph =>
+                            <p align="justify">{paragraph}</p>
+                        )}</div>
                         {isAuthenticated ?
                             <div className="card my-4">
                                 <h5 className="card-header">Leave a Comment:</h5>
@@ -179,9 +197,10 @@ class BlogItem extends Component {
                                             onChange={this.onChange}
                                             rows="3"
                                             required
+                                            aria-required="true"
                                         />
                                         </div>
-                                        <button type="submit" className="btn btn-primary">Submit
+                                        <button type="submit" className="rounded btn btn-primary">Submit
                                         </button>
                                     </form>
                                 </div>
@@ -198,10 +217,15 @@ class BlogItem extends Component {
                                             <div className="card-body" key={comment.id}>
                                                 <p className="card-text">Commented By: {comment.owner}</p>
                                                 {isAuthenticated && this.props.auth.user.username === comment.owner ?
-                                                    <i className="float-right fas fa-trash"
-                                                       onClick={this.deleteComment(comment.id)}
-                                                       title="Delete"
-                                                    />
+                                                    <button
+                                                        className="rounded btn btn-danger float-right"
+                                                        onClick={this.deleteComment(comment.id)}
+                                                    >
+                                                        <i className="fa fa-trash"
+                                                           title="Delete"
+                                                        />
+                                                    </button>
+
                                                     : null
                                                 }
                                                 <h5 className="card-title">{comment.description}</h5>
@@ -215,14 +239,13 @@ class BlogItem extends Component {
                                                                     <textarea
                                                                         className="form-control"
                                                                         name="replyDescription"
-                                                                        value={this.state.replyDescription}
-                                                                        onChange={this.onChange}
                                                                         rows="3"
                                                                         required
+                                                                        aria-required="true"
                                                                     />
                                                                 </div>
                                                                 <button type="submit"
-                                                                        className="btn btn-primary">Submit
+                                                                        className="rounded btn btn-primary">Submit
                                                                 </button>
                                                             </form>
                                                         </div>
@@ -230,18 +253,24 @@ class BlogItem extends Component {
                                                     : null
                                                 }
 
+
                                                 <div className="card">
                                                     {comment.reply.map((reply) => (
                                                         <div className="card" key={comment.id}>
                                                             <div className="card-body" key={reply.id}>
                                                                 <p className="card-text">Commented By: {reply.owner}</p>
                                                                 {isAuthenticated && this.props.auth.user.username === reply.owner ?
-                                                                    <i className="float-right fas fa-trash"
-                                                                       onClick={this.deleteComment(reply.id)}
-                                                                       title="Delete"
-                                                                    />
+                                                                    <button
+                                                                        className="rounded float-right btn btn-danger"
+                                                                        onClick={this.deleteComment(reply.id)}
+                                                                    >
+                                                                        <i className="fa fa-trash"
+                                                                           title="Delete"
+                                                                        />
+                                                                    </button>
                                                                     : null
                                                                 }
+
                                                                 <h5 className="card-title">{reply.description}</h5>
                                                                 <h6 className="card-subtitle mb-2 text-muted">{(new Date(reply.created)).toDateString()}</h6>
                                                             </div>
@@ -258,9 +287,22 @@ class BlogItem extends Component {
                                                  title="Edit">
                                     {isOwner ? authLinks : null}
                                 </CreateBlogModal>
+
+                                <CreateBlogModal show={this.state.deleteModal} handleClose={this.hideDeleteModal}
+                                                 title="Are You Sure you want to delete this?">
+                                    <div>
+                                        <form onSubmit={this.deleteBlog}>
+                                            <div className="form-group">
+                                                <button type="submit" className="rounded btn btn-primary">
+                                                    Yes
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </CreateBlogModal>
+
                             </div>
                         </div>
-
                     </div>
                 </Fragment>
 

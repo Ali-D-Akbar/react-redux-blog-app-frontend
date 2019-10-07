@@ -5,19 +5,22 @@ import PropTypes from 'prop-types';
 import {deleteBlog, getBlogItem, getBlogList, searchBlogs} from "../../actions/blogList";
 import './BlogList.css';
 import defaultImage from '../../../public/default.png'
+import serverData from '../../config';
 
 class BlogList extends Component {
     static propTypes = {
-        blogList: PropTypes.array.isRequired,
+        blogList: PropTypes.object.isRequired,
         getBlogList: PropTypes.func.isRequired,
-        searchBlogs: PropTypes.func.isRequired
+        searchBlogs: PropTypes.func.isRequired,
+        auth: PropTypes.object.isRequired,
     };
 
     state = {
         keyword: "",
         type: "title",
         currentPage: 1,
-        blogsPerPage: 3,
+        blogsPerPage: serverData.page_size,
+        showDrafts: false,
         blogId: null,
         redirect: false,
     };
@@ -28,16 +31,17 @@ class BlogList extends Component {
 
     search = e => {
         e.preventDefault();
-        this.props.searchBlogs(`?keyword=${this.state.keyword}`);
+        this.props.getBlogList(`/api/blog/?keyword=${this.state.keyword}`);
     };
 
     componentDidMount() {
-        this.props.getBlogList();
+        this.props.getBlogList('/api/blog/');
     }
 
     nextPage = (event) => {
         const {currentPage, blogsPerPage} = this.state;
-        if (currentPage + 1 <= Math.ceil(this.props.blogList.length / blogsPerPage)) {
+        if (this.state.currentPage + 1 <= Math.ceil(this.props.blogList.count / blogsPerPage)) {
+            this.props.getBlogList(`/api/blog/?page=${this.state.currentPage + 1}`);
             this.setState({
                 currentPage: currentPage + 1
             });
@@ -46,15 +50,16 @@ class BlogList extends Component {
 
     previousPage = (event) => {
         const {currentPage} = this.state;
-        if (currentPage - 1 >= 1) {
+        if (this.state.currentPage - 1 > 0) {
+            this.props.getBlogList(`/api/blog/?page=${this.state.currentPage - 1}`);
             this.setState({
                 currentPage: currentPage - 1
             });
         }
     };
 
-
     handleClick = (event) => {
+        this.props.getBlogList(`/api/blog/?page=${Number(event.target.id)}`);
         this.setState({
             currentPage: Number(event.target.id)
         });
@@ -71,31 +76,31 @@ class BlogList extends Component {
         if (this.state.redirect)
             return <Redirect to={`/blogitem/${this.state.blogId}`}/>;
 
-        const {currentPage, blogsPerPage} = this.state;
-
-        const indexOfLastTodo = currentPage * blogsPerPage;
-        const indexOfFirstTodo = indexOfLastTodo - blogsPerPage;
-        const currentBlogList = this.props.blogList.slice(indexOfFirstTodo, indexOfLastTodo);
+        const {blogsPerPage} = this.state;
 
         const pageNumbers = [];
-        for (let i = 1; i <= Math.ceil(this.props.blogList.length / blogsPerPage); i++) {
+        for (let i = 1; i <= Math.ceil(this.props.blogList.count / blogsPerPage); i++) {
             pageNumbers.push(i);
         }
 
         return (
             <div>
-                <h4 className="alert-success">{this.props.messages.login ? `${this.props.messages.login}` : ""}</h4>
+                {this.props.messages.login ? <h4 className="rounded p-2 mt-4 alert-success">{this.props.messages.login}</h4>
+                    :
+                    null
+                }
                 <form className="my-3 search" onSubmit={this.search}>
 
                     <div className="row">
                         <div className="col-2">
-                            <select className="rounded form-control">
+                            <select className="rounded form-control"
+                                    onChange={(e) => this.props.getBlogList('/api/blog/', e.target.value)}>
                                 <option value="newest">Newest</option>
                                 <option value="ascending">A-Z</option>
                                 <option value="descending">Z-A</option>
                             </select>
                         </div>
-                        <div className="col-3"> </div>
+                        <div className="col-3" />
                         <div className="col-6">
                             <input
                                 className="rounded form-control"
@@ -106,86 +111,115 @@ class BlogList extends Component {
                                 onChange={this.onChange}
                             />
                         </div>
-                        <button className="rounded btn btn-primary" type="submit"><i
-                            className="fas fa-search"/></button>
+                        <button className="rounded btn btn-primary" type="submit" title="Search"><i
+                            className="fa fa-search"/></button>
 
                     </div>
                 </form>
 
                 <h1>Blog Posts</h1>
 
-                {currentBlogList.map((blogItem) => (
-                    <div className="m-4 rounded card card-body clickable" onClick={this.showBlogItem(blogItem.id)}>
+                {!this.props.blogList.count > 0 ?
+                    <h3>No Posts Found!</h3>
+                    :
+                    <div>
+                        {this.props.blogList.results.map((blogItem) => (
+                            <div>
 
-                        <div className="row">
-                            <div className="col-md-5">
-                                <div className="post-thumbnail">
-                                    {blogItem.image ?
-                                        <img className="card-img-top"
-                                             height="250"
-                                             src={blogItem.image}
-                                             alt="new"
-                                        />
-                                        :
-                                        <img className="card-img-top"
-                                             height="250"
-                                             src={defaultImage}
-                                             alt="new"
-                                        />
-                                    }
+                                <div className="m-4 rounded card card-body clickable"
+                                     onClick={this.showBlogItem(blogItem.slug)}>
 
-                                </div>
-                            </div>
-                            <div className="col-md-7">
-                                <header className="entry-header">
-                                    <h3 className="entry-title">{blogItem.title}</h3>
-                                    <ul className="entry-meta list-inline">
-                                        <li>
-                                            Posted by<span className="posted-by">
+                                    <div className="row">
+                                        <div className="col-md-5">
+                                            <div className="post-thumbnail">
+                                                {blogItem.image ?
+                                                    <img className="card-img-top"
+                                                         height="250"
+                                                         src={blogItem.image}
+                                                         alt={blogItem.title}
+                                                    />
+                                                    :
+                                                    <img className="card-img-top"
+                                                         height="250"
+                                                         src={defaultImage}
+                                                         alt={blogItem.title}
+                                                    />
+                                                }
+
+                                            </div>
+                                        </div>
+                                        <div className="col-md-7">
+                                            <header className="entry-header">
+                                                <h3 className="entry-title">{blogItem.title}</h3>
+                                                <ul className="entry-meta list-inline">
+                                                    <li>
+                                                        Posted by<span className="posted-by">
                                                     <span className="author"> {blogItem.owner}</span></span>
-                                        </li>
-                                        <li>
-                                            Posted on
-                                            <span className="posted-on">
+                                                    </li>
+                                                    <li>
+                                                        Posted on
+                                                        <span className="posted-on">
                                                 <time className="updated"
                                                       dateTime="2019-07-26T10:33:42+00:00"> {(new Date(blogItem.created)).toDateString()}
                                                 </time>
                                             </span>
-                                        </li>
-                                    </ul>
-                                </header>
-                                <div className="card-text">
-                                    {blogItem.description.length > 200 ? `${blogItem.description.substring(0, 400)}...` : blogItem.description}
+                                                    </li>
+                                                </ul>
+                                            </header>
+                                            <div className="card-text">
+                                                {blogItem.description.length > 200 ? `${blogItem.description.substring(0, 400)}...` : blogItem.description}
+                                            </div>
+                                            {blogItem.draft ?
+                                                <button className="rounded btn btn-primary float-right bottom"
+                                                        onClick={this.showBlogItem(blogItem.id)}>Show Draft
+                                                </button>
+                                                :
+                                                <button className="rounded btn btn-primary float-right bottom"
+                                                        onClick={this.showBlogItem(blogItem.id)}>Read More
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
-                                <button className="rounded btn btn-primary float-right bottom"
-                                        onClick={this.showBlogItem(blogItem.id)}>Read More
-                                </button>
+
                             </div>
+                        ))}
+
+                        <div className="ml-2 container row">
+                            <a className="page-numbers previous rounded col-sm1"
+                               onClick={this.previousPage}> <i className="fa fa-angle-left"/> Previous</a>
+                            <div className="col-sm text-center">
+                                {
+                                    pageNumbers.map(number => {
+                                        if (number === this.state.currentPage) {
+                                            return (
+                                                <a className="rounded current page-numbers"
+                                                   key={number}
+                                                   id={number}
+                                                   onClick={this.handleClick}>
+
+                                                    {number}
+                                                </a>
+                                            );
+                                        }
+                                        return (
+                                            <a className="rounded page-numbers"
+                                               key={number}
+                                               id={number}
+                                               onClick={this.handleClick}>
+
+                                                {number}
+                                            </a>
+                                        );
+                                    })
+
+                                }
+                            </div>
+                            <a className="page-numbers mr-3 rounded next float-right col-sm1"
+                               onClick={this.nextPage}>Next <i className="fa fa-angle-right"/> </a>
                         </div>
                     </div>
-                ))}
-
-                <div className="ml-2 container row">
-                    <a className="page-numbers previous rounded col-sm1"
-                       onClick={this.previousPage}>&laquo; Previous</a>
-                    <div className="col-sm text-center">
-                        {
-                            pageNumbers.map(number => {
-                                return (
-                                    <a className="page-numbers"
-                                       key={number}
-                                       id={number}
-                                       onClick={this.handleClick}>
-
-                                        {number}
-                                    </a>
-                                );
-                            })
-                        }
-                    </div>
-                    <a className="page-numbers mr-3 rounded next float-right col-sm1"
-                       onClick={this.nextPage}>Next &raquo;</a>
-                </div>
+                }
             </div>
 
         );
@@ -193,8 +227,9 @@ class BlogList extends Component {
 }
 
 const mapStateToProps = state => ({
-    blogList: state.blogList.blogList,
-    messages: state.messages
+    blogList: state.blogList,
+    messages: state.messages,
+    auth: state.auth,
 });
 
 export default connect(mapStateToProps, {getBlogList, deleteBlog, getBlogItem, searchBlogs})(BlogList);

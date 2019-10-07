@@ -38,7 +38,8 @@ export class Login extends Component {
                             : null}
 
                         <div className="form-group">
-                            <label className="mt-2">Username*</label>
+                            <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are required.</p>
+                            <label>Username *</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -46,10 +47,11 @@ export class Login extends Component {
                                 onChange={this.onChange}
                                 value={username}
                                 required
+                                aria-required="true"
                             />
                         </div>
                         <div className="form-group">
-                            <label>Password*</label>
+                            <label>Password *</label>
                             <input
                                 type="password"
                                 className="form-control"
@@ -57,6 +59,7 @@ export class Login extends Component {
                                 onChange={this.onChange}
                                 value={password}
                                 required
+                                aria-required="true"
                             />
                         </div>
                         <div className="form-group">
