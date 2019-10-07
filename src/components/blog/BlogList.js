@@ -181,7 +181,6 @@ class BlogList extends Component {
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         ))}
 
