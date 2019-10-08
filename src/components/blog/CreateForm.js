@@ -1,6 +1,6 @@
+import PropTypes from "prop-types";
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import PropTypes from "prop-types";
 import {addBlog} from "../../actions/blogList";
 
 class CreateForm extends Component {
@@ -66,7 +66,6 @@ class CreateForm extends Component {
     render() {
         const {title, description} = this.state;
         return (
-
             <div className="card card-body mt-4 mb-4">
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
@@ -110,11 +109,13 @@ class CreateForm extends Component {
 
                     {this.props.errors.msg.description ?
                         <span className='error'>Description is blank! {this.props.errors.msg.description}</span>
-                        : null}
+                        : null
+                    }
 
                     {this.props.messages.addBlog ?
                         <span className='success'>{this.props.messages.addBlog}</span>
-                        : null}
+                        : null
+                    }
 
                     <div className="form-group">
                         <button name="submit" value="submit" type="submit" className="mr-4 btn btn-primary">
@@ -124,7 +125,6 @@ class CreateForm extends Component {
                             Save As Draft
                         </button>
                     </div>
-
                 </form>
             </div>
         );

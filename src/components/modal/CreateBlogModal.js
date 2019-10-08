@@ -12,7 +12,7 @@ const CreateBlogModal = ({handleClose, show, title, children}) => {
                         <h5 className="modal-title">{title}</h5>
                         <button type="button" className="close" data-dismiss="modal" aria-label="Close"
                                 onClick={handleClose}>
-                            <span aria-hidden="true">&times;</span>
+                            <i className="fa fa-close"/>
                         </button>
                     </div>
                     <div className="modal-body">

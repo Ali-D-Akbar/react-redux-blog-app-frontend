@@ -1,9 +1,9 @@
 import axios from 'axios';
-import {tokenConfig} from "./auth";
 
 import {ADD_BLOG, CLEAR_BLOGITEM, DELETE_BLOG, GET_BLOGITEM, GET_BLOGLIST, UPDATE_BLOG} from '../actionTypes/blog'
-import {createMessage, returnErrors} from "./messages";
 import serverData from '../config';
+import {tokenConfig} from "./auth";
+import {createMessage, returnErrors} from "./messages";
 
 //Upvote
 export const blogUpvote = (id) => (dispatch, getState) => {

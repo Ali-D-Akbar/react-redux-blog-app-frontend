@@ -1,13 +1,13 @@
+import PropTypes from "prop-types";
 import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
-import PropTypes from "prop-types";
+import {Redirect} from "react-router-dom";
+import defaultImage from '../../../public/default.png'
 import {blogDownvote, blogUpvote, deleteBlog, getBlogItem} from "../../actions/blogList";
-import UpdateForm from "./UpdateForm";
 import {addComment, deleteComment} from "../../actions/comment";
 import CreateBlogModal from "../modal/CreateBlogModal";
 import './BlogItem.css';
-import defaultImage from '../../../public/default.png'
-import {Redirect} from "react-router-dom";
+import UpdateForm from "./UpdateForm";
 
 class BlogItem extends Component {
     static propTypes = {
@@ -181,9 +181,12 @@ class BlogItem extends Component {
                         }
 
                         <br/>
-                        <div className="mt-4 lead">{this.props.blogItem.description.split('\n').map(paragraph =>
-                            <p align="justify">{paragraph}</p>
-                        )}</div>
+
+                        <div className="mt-4 lead">
+                            {this.props.blogItem.description.split('\n').map(paragraph =>
+                                <p align="justify">{paragraph}</p>
+                            )}
+                        </div>
                         {isAuthenticated ?
                             <div className="card my-4">
                                 <h5 className="card-header">Leave a Comment:</h5>
@@ -200,7 +203,8 @@ class BlogItem extends Component {
                                             aria-required="true"
                                         />
                                         </div>
-                                        <button type="submit" className="rounded btn btn-primary">Submit
+                                        <button type="submit" className="rounded btn btn-primary">
+                                            Submit
                                         </button>
                                     </form>
                                 </div>
@@ -229,7 +233,9 @@ class BlogItem extends Component {
                                                     : null
                                                 }
                                                 <h5 className="card-title">{comment.description}</h5>
-                                                <h6 className="card-subtitle mb-2 text-muted">{(new Date(comment.created)).toDateString()}</h6>
+                                                <h6 className="card-subtitle mb-2 text-muted">
+                                                    {(new Date(comment.created)).toDateString()}
+                                                </h6>
                                                 {isAuthenticated ?
                                                     <div className="card my-4">
                                                         <h5 className="card-header">Reply:</h5>
@@ -253,6 +259,19 @@ class BlogItem extends Component {
                                                     : null
                                                 }
 
+                                                <div className="card">
+                                                    {comment.reply.map((reply) => (
+                                                        <div className="card" key={comment.id}>
+                                                            <div className="card-body" key={reply.id}>
+                                                                <p className="card-text">Commented By: {reply.owner}</p>
+                                                                {isAuthenticated && this.props.auth.user.username === reply.owner ?
+                                                                    <button
+                                                                        className="rounded float-right btn btn-danger"
+                                                                        onClick={this.deleteComment(reply.id)}>
+                                                                        <i className="fa fa-trash" title="Delete"/>
+                                                                    </button>
+                                                                    : null
+                                                                }
 
                                                 <div className="card">
                                                     {comment.reply.map((reply) => (
@@ -272,7 +291,9 @@ class BlogItem extends Component {
                                                                 }
 
                                                                 <h5 className="card-title">{reply.description}</h5>
-                                                                <h6 className="card-subtitle mb-2 text-muted">{(new Date(reply.created)).toDateString()}</h6>
+                                                                <h6 className="card-subtitle mb-2 text-muted">
+                                                                    {(new Date(reply.created)).toDateString()}
+                                                                </h6>
                                                             </div>
                                                         </div>
                                                     ))
@@ -283,8 +304,7 @@ class BlogItem extends Component {
                                     );
                                 })
                                 }
-                                <CreateBlogModal show={this.state.modalShow} handleClose={this.hideModal}
-                                                 title="Edit">
+                                <CreateBlogModal show={this.state.modalShow} handleClose={this.hideModal} title="Edit">
                                     {isOwner ? authLinks : null}
                                 </CreateBlogModal>
 
@@ -309,8 +329,12 @@ class BlogItem extends Component {
             );
         } else
             return (
-                <div className="card">
-                    No Blog Found
+                <div>
+                    {this.props.loading ?
+                        <h4>Loading...</h4>
+                        :
+                        <h4>No blog post Found!</h4>
+                    }
                 </div>
             )
     }
@@ -318,6 +342,7 @@ class BlogItem extends Component {
 
 const mapStateToProps = state => ({
     blogItem: state.blogItem.blogItem,
+    loading: state.blogItem.loading,
     auth: state.auth,
     messages: state.messages,
     errors: state.errors,

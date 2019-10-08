@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {Link, Redirect} from 'react-router-dom';
-import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Link, Redirect} from 'react-router-dom';
 import {login} from "../../actions/auth";
 
 
@@ -35,7 +35,8 @@ export class Login extends Component {
                     <form onSubmit={this.onSubmit}>
                         {this.props.errors.msg.non_field_errors ?
                             <span className='alert alert-danger'>{this.props.errors.msg.non_field_errors}</span>
-                            : null}
+                            : null
+                        }
 
                         <div className="form-group">
                             <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are required.</p>

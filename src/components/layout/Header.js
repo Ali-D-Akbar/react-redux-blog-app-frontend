@@ -1,13 +1,13 @@
-import React, {Component} from "react";
-import {Link} from 'react-router-dom';
-import {logout} from "../../actions/auth";
-import {connect} from "react-redux";
 import PropTypes from "prop-types";
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {Link} from 'react-router-dom';
 import weblog from '../../../public/weblog.png'
+import {logout} from "../../actions/auth";
+import {getBlogList} from "../../actions/blogList";
 import CreateForm from "../blog/CreateForm";
 import CreateBlogModal from "../modal/CreateBlogModal";
 import './Header.css'
-import {getBlogList} from "../../actions/blogList";
 
 class Header extends Component {
     static propTypes = {
@@ -33,14 +33,12 @@ class Header extends Component {
     };
 
     render() {
-        const {isAuthenticated} = this.props.auth;
 
         const authLinks = (
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
                 <li className="nav-item  mr-2">
-                    <button className="rounded btn btn-secondary" type="button"
-                            onClick={this.showModal}>
-                        Add New Blog
+                    <button className="rounded btn btn-secondary" type="button" onClick={this.showModal}>
+                        Post a New Blog
                     </button>
                 </li>
                 <li className="nav-item">
@@ -53,7 +51,6 @@ class Header extends Component {
 
         const guestLinks = (
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
-                <li className="nav-item mr-2">
                     <Link to="/register" className="nav-link">
                         <button className="btn btn-secondary">
                             Register
@@ -72,7 +69,7 @@ class Header extends Component {
 
         return (
             <nav className="navbar navbar-expand-sm navbar-light blue">
-                <CreateBlogModal show={this.state.modalShow} handleClose={this.hideModal} title="Add New Blog">
+                <CreateBlogModal show={this.state.modalShow} handleClose={this.hideModal} title="Post a New Blog">
                     <CreateForm/>
                 </CreateBlogModal>
                 <div className="container">
@@ -83,17 +80,12 @@ class Header extends Component {
                         data-target="#navbarTogglerDemo01"
                         aria-controls="navbarTogglerDemo01"
                         aria-expanded="false"
-                        aria-label="Toggle navigation"
-                    >
+                        aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"/>
                     </button>
                     <div className="rounded collapse navbar-collapse" id="navbarTogglerDemo01">
                         <a className="navbar-brand" href="#">
-                            <img height="50"
-                                 width="100"
-                                 src={weblog}
-                                 alt="logo"
-                            />
+                            <img height="50" width="100" src={weblog} alt="logo"/>
                         </a>
                     </div>
                     {isAuthenticated ? authLinks : guestLinks}

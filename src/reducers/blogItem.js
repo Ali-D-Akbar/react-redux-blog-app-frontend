@@ -1,8 +1,8 @@
 import {CLEAR_BLOGITEM, GET_BLOGITEM} from "../actionTypes/blog";
 
 const initialState = {
-    blogItem: null
-
+    blogItem: null,
+    loading: true
 };
 
 export default function (state = initialState, action) {
@@ -10,11 +10,13 @@ export default function (state = initialState, action) {
         case GET_BLOGITEM:
             return {
                 ...state,
-                blogItem: action.payload
+                blogItem: action.payload,
+                loading: false
             };
         case CLEAR_BLOGITEM:
             return {
-                blogItem: null
+                blogItem: null,
+                loading: true
             };
         default:
             return state;

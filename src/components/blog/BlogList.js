@@ -1,11 +1,11 @@
+import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Redirect} from 'react-router-dom';
-import PropTypes from 'prop-types';
-import {deleteBlog, getBlogItem, getBlogList, searchBlogs} from "../../actions/blogList";
-import './BlogList.css';
+import {Link, Redirect} from 'react-router-dom';
 import defaultImage from '../../../public/default.png'
+import {deleteBlog, getBlogItem, getBlogList, searchBlogs} from "../../actions/blogList";
 import serverData from '../../config';
+import './BlogList.css';
 
 class BlogList extends Component {
     static propTypes = {
@@ -76,6 +76,8 @@ class BlogList extends Component {
         if (this.state.redirect)
             return <Redirect to={`/blogitem/${this.state.blogId}`}/>;
 
+        const {currentPage, blogsPerPage} = this.state;
+
         const {blogsPerPage} = this.state;
 
         const pageNumbers = [];
@@ -85,7 +87,8 @@ class BlogList extends Component {
 
         return (
             <div>
-                {this.props.messages.login ? <h4 className="rounded p-2 mt-4 alert-success">{this.props.messages.login}</h4>
+                {this.props.messages.login ?
+                    <h4 className="rounded p-2 mt-4 alert-success">{this.props.messages.login}</h4>
                     :
                     null
                 }
@@ -100,7 +103,7 @@ class BlogList extends Component {
                                 <option value="descending">Z-A</option>
                             </select>
                         </div>
-                        <div className="col-3" />
+                        <div className="col-3"/>
                         <div className="col-6">
                             <input
                                 className="rounded form-control"
@@ -111,76 +114,88 @@ class BlogList extends Component {
                                 onChange={this.onChange}
                             />
                         </div>
-                        <button className="rounded btn btn-primary" type="submit" title="Search"><i
-                            className="fa fa-search"/></button>
+                        <button className="rounded btn btn-primary" type="submit" title="Search">
+                            <i className="fa fa-search"/>
+                        </button>
 
                     </div>
                 </form>
 
                 <h1>Blog Posts</h1>
 
-                {!this.props.blogList.count > 0 ?
-                    <h3>No Posts Found!</h3>
+                {this.props.blogList.count === 0 ?
+                    <div>
+                        {this.props.blogList.loading ?
+                            <h4>Loading...</h4>
+                            :
+                            <h4>No Posts Found!</h4>
+                        }
+                    </div>
+
                     :
                     <div>
                         {this.props.blogList.results.map((blogItem) => (
                             <div>
+                                <Link to={`/blogitem/${blogItem.slug}`}
+                                      style={{textDecoration: 'none', color: 'black'}}>
+                                    <div className="m-4 rounded card card-body clickable"
+                                         onClick={this.showBlogItem(blogItem.slug)}>
 
-                                <div className="m-4 rounded card card-body clickable"
-                                     onClick={this.showBlogItem(blogItem.slug)}>
+                                        <div className="row">
+                                            <div className="col-md-5">
+                                                <div className="post-thumbnail">
 
-                                    <div className="row">
-                                        <div className="col-md-5">
-                                            <div className="post-thumbnail">
-                                                {blogItem.image ?
-                                                    <img className="card-img-top"
-                                                         height="250"
-                                                         src={blogItem.image}
-                                                         alt={blogItem.title}
-                                                    />
+                                                    {blogItem.image ?
+                                                        <img className="card-img-top"
+                                                             height="250"
+                                                             src={blogItem.image}
+                                                             alt={blogItem.title}
+                                                        />
+                                                        :
+                                                        <img className="card-img-top"
+                                                             height="250"
+                                                             src={defaultImage}
+                                                             alt={blogItem.title}
+                                                        />
+                                                    }
+
+                                                </div>
+                                            </div>
+                                            <div className="col-md-7">
+                                                <header className="entry-header">
+                                                    <h3 className="entry-title">{blogItem.title}</h3>
+                                                    <ul className="entry-meta list-inline">
+                                                        <li> Posted by
+                                                            <span className="posted-by">
+                                                                <span className="author"> {blogItem.owner}</span>
+                                                            </span>
+                                                        </li>
+                                                        <li>Posted on
+                                                            <span className="posted-on">
+                                                                <time className="updated"> 
+                                                                    {(new Date(blogItem.created)).toDateString()}
+                                                                </time>
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                </header>
+                                                <div className="card-text">
+                                                    {blogItem.description.length > 200 ? `${blogItem.description.substring(0, 400)}...` : blogItem.description}
+                                                </div>
+                                                {blogItem.draft ?
+                                                    <button className="rounded btn btn-primary float-right bottom"
+                                                            onClick={this.showBlogItem(blogItem.id)}>Show Draft
+                                                    </button>
                                                     :
-                                                    <img className="card-img-top"
-                                                         height="250"
-                                                         src={defaultImage}
-                                                         alt={blogItem.title}
-                                                    />
+                                                    <button className="rounded btn btn-primary float-right bottom"
+                                                            onClick={this.showBlogItem(blogItem.id)}>Read More
+                                                    </button>
                                                 }
-
                                             </div>
-                                        </div>
-                                        <div className="col-md-7">
-                                            <header className="entry-header">
-                                                <h3 className="entry-title">{blogItem.title}</h3>
-                                                <ul className="entry-meta list-inline">
-                                                    <li>
-                                                        Posted by<span className="posted-by">
-                                                    <span className="author"> {blogItem.owner}</span></span>
-                                                    </li>
-                                                    <li>
-                                                        Posted on
-                                                        <span className="posted-on">
-                                                <time className="updated"
-                                                      dateTime="2019-07-26T10:33:42+00:00"> {(new Date(blogItem.created)).toDateString()}
-                                                </time>
-                                            </span>
-                                                    </li>
-                                                </ul>
-                                            </header>
-                                            <div className="card-text">
-                                                {blogItem.description.length > 200 ? `${blogItem.description.substring(0, 400)}...` : blogItem.description}
-                                            </div>
-                                            {blogItem.draft ?
-                                                <button className="rounded btn btn-primary float-right bottom"
-                                                        onClick={this.showBlogItem(blogItem.id)}>Show Draft
-                                                </button>
-                                                :
-                                                <button className="rounded btn btn-primary float-right bottom"
-                                                        onClick={this.showBlogItem(blogItem.id)}>Read More
-                                                </button>
-                                            }
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
+
                             </div>
                         ))}
 
@@ -206,16 +221,15 @@ class BlogList extends Component {
                                                key={number}
                                                id={number}
                                                onClick={this.handleClick}>
-
                                                 {number}
                                             </a>
                                         );
                                     })
-
                                 }
                             </div>
+
                             <a className="page-numbers mr-3 rounded next float-right col-sm1"
-                               onClick={this.nextPage}>Next <i className="fa fa-angle-right"/> </a>
+
                         </div>
                     </div>
                 }

@@ -1,7 +1,7 @@
-import React, {Component} from "react";
-import {Link, Redirect} from "react-router-dom";
-import {connect} from "react-redux";
 import PropTypes from "prop-types";
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {Link, Redirect} from "react-router-dom";
 import {register} from "../../actions/auth";
 import {returnErrors} from "../../actions/messages";
 import './Register.css'
@@ -113,11 +113,9 @@ export class Register extends Component {
                                 required
                                 aria-required="true"
                             />
-                            {errors.username.length > 0 &&
-                            <span className='error'>{errors.username}</span>}
-                            {this.props.errors.msg.username ?
-                                <span className='error'>{this.props.errors.msg.username}</span>
-                                : null}
+                            {errors.username.length > 0 && <span className='error'>{errors.username}</span>}
+                            {this.props.errors.msg.username &&
+                            <span className='error'>{this.props.errors.msg.username}</span>}
                         </div>
                         <div className="form-group">
                             <label>Email *</label>
@@ -130,8 +128,7 @@ export class Register extends Component {
                                 required
                                 aria-required="true"
                             />
-                            {errors.email.length > 0 &&
-                            <span className='error'>{errors.email}</span>}
+                            {errors.email.length > 0 && <span className='error'>{errors.email}</span>}
                         </div>
                         <div className="form-group">
                             <label>Password *</label>
@@ -144,8 +141,7 @@ export class Register extends Component {
                                 required
                                 aria-required="true"
                             />
-                            {errors.password.length > 0 &&
-                            <span className='error'>{errors.password}</span>}
+                            {errors.password.length > 0 && <span className='error'>{errors.password}</span>}
                         </div>
                         <div className="form-group">
                             <label>Confirm Password *</label>
@@ -158,11 +154,9 @@ export class Register extends Component {
                                 required
                                 aria-required="true"
                             />
-                            {errors.password2.length > 0 &&
-                            <span className='error'>{errors.password2}</span>}
-                            {this.props.errors.msg.passwordDoesNotMatch ?
-                                <span className='error'>{this.props.errors.msg.passwordDoesNotMatch}</span>
-                                : null}
+                            {errors.password2.length > 0 && <span className='error'>{errors.password2}</span>}
+                            {this.props.errors.msg.passwordDoesNotMatch &&
+                            <span className='error'>{this.props.errors.msg.passwordDoesNotMatch}</span>}
 
                         </div>
                         <div className="form-group">

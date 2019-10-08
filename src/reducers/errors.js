@@ -6,13 +6,12 @@ const initialState = {
 };
 
 export default function (state = initialState, action) {
-    switch (action.type) {
-        case GET_ERRORS:
-            return {
-                msg: action.payload.message,
-                status: action.payload.status
-            };
-        default:
-            return state;
+    if (action.type === GET_ERRORS) {
+        return {
+            msg: action.payload.message,
+            status: action.payload.status
+        };
+    } else {
+        return state;
     }
 }
