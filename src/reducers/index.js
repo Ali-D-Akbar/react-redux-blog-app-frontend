@@ -10,5 +10,5 @@ export default combineReducers({
     blogItem,
     errors,
     messages,
-    auth
+    auth,
 });

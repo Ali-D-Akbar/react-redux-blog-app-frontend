@@ -1,4 +1,4 @@
-import {CLEAR_BLOGITEM, GET_BLOGITEM} from "../actionTypes/blog";
+import {CLEAR_BLOGITEM, GET_BLOGITEM, UPDATE_BLOG} from "../actionTypes/blog";
 
 const initialState = {
     blogItem: null,
@@ -17,6 +17,11 @@ export default function (state = initialState, action) {
             return {
                 blogItem: null,
                 loading: true
+            };
+        case UPDATE_BLOG:
+            return {
+                blogItem: action.payload,
+                loading: false
             };
         default:
             return state;

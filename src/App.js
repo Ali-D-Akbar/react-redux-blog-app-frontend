@@ -8,15 +8,17 @@ import Login from "./components/accounts/Login"
 import Register from "./components/accounts/Register";
 import BlogItem from "./components/blog/BlogItem";
 import Dashboard from './components/blog/Dashboard.js';
+import Profile from "./components/blog/Profile";
 import Footer from "./components/layout/Footer";
-import Header from "./components/layout/Header";
 
-// import Header from "/components/layout/Header";
+import Header from "./components/layout/Header";
 import store from './store';
+
+// import Header from "components/layout/Header";
 
 class App extends Component {
     componentDidMount() {
-        store.dispatch(loadUser())
+        store.dispatch(loadUser());
     }
 
     render() {
@@ -31,10 +33,10 @@ class App extends Component {
                                     <Route exact path="/" component={Dashboard}/>
                                     <Route exact path="/register" component={Register}/>
                                     <Route exact path="/login" component={Login}/>
+                                    <Route exact path="/profile" component={Profile}/>
                                     <Route exact path="/blogitem/:blogId" component={BlogItem}/>
                                 </Switch>
                             </div>
-                            <br/>
                             <Footer/>
                         </Router>
                     </Provider>

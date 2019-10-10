@@ -35,8 +35,9 @@ class BlogList extends Component {
     };
 
     componentDidMount() {
-        this.props.getBlogList('/api/blog/');
+        setTimeout(() => this.props.getBlogList('/api/blog/'), 1000);
     }
+
 
     nextPage = (event) => {
         const {currentPage, blogsPerPage} = this.state;
@@ -75,8 +76,6 @@ class BlogList extends Component {
     render() {
         if (this.state.redirect)
             return <Redirect to={`/blogitem/${this.state.blogId}`}/>;
-
-        const {currentPage, blogsPerPage} = this.state;
 
         const {blogsPerPage} = this.state;
 
@@ -158,7 +157,6 @@ class BlogList extends Component {
                                                              alt={blogItem.title}
                                                         />
                                                     }
-
                                                 </div>
                                             </div>
                                             <div className="col-md-7">
@@ -167,13 +165,15 @@ class BlogList extends Component {
                                                     <ul className="entry-meta list-inline">
                                                         <li> Posted by
                                                             <span className="posted-by">
-                                                                <span className="author"> {blogItem.owner}</span>
+                                                                <span className="author">
+                                                                    {' ' + blogItem.owner.first_name + ' ' + blogItem.owner.last_name}
+                                                                </span>
                                                             </span>
                                                         </li>
                                                         <li>Posted on
                                                             <span className="posted-on">
-                                                                <time className="updated"> 
-                                                                    {(new Date(blogItem.created)).toDateString()}
+                                                                <time className="updated">
+                                                                    {' ' + (new Date(blogItem.created)).toDateString()}
                                                                 </time>
                                                             </span>
                                                         </li>
@@ -229,7 +229,9 @@ class BlogList extends Component {
                             </div>
 
                             <a className="page-numbers mr-3 rounded next float-right col-sm1"
-
+                               onClick={this.nextPage}>
+                                Next <i className="fa fa-angle-right"/>
+                            </a>
                         </div>
                     </div>
                 }

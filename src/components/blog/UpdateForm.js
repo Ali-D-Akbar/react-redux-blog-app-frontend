@@ -37,10 +37,8 @@ class UpdateForm extends Component {
             form_data.append('image', this.state.image, this.state.image.name);
             this.props.updateBlog(this.state.id, form_data, true);
         } else {
-            this.props.updateBlog(this.state.id, form_data);
+            this.props.updateBlog(this.state.id, form_data, false);
         }
-
-        setTimeout(() => this.setState({reload: true}), 1000);
     };
 
     saveAsDraft = e => {
@@ -53,15 +51,8 @@ class UpdateForm extends Component {
             form_data.append('image', this.state.image, this.state.image.name);
             this.props.updateBlog(this.state.id, form_data, true);
         } else {
-            this.props.updateBlog(this.state.id, form_data);
+            this.props.updateBlog(this.state.id, form_data, false);
         }
-
-        this.setState({
-            title: "",
-            description: "",
-            image: ""
-        });
-        setTimeout(() => this.setState({reload: true}), 1000);
     };
 
     render() {
@@ -108,6 +99,12 @@ class UpdateForm extends Component {
                         />
                         <label>(Best Size: 1024 x 600)</label>
                     </div>
+
+                    {this.props.messages.updateBlog ?
+                        <span className='success'>{this.props.messages.updateBlog}</span>
+                        : null
+                    }
+
                     <div className="form-group">
                         <button type="submit" className="mr-4 rounded btn btn-primary">
                             Publish
@@ -125,7 +122,12 @@ class UpdateForm extends Component {
     }
 }
 
+const mapStateToProps = state => ({
+    errors: state.errors,
+    messages: state.messages,
+});
+
 export default connect(
-    null,
+    mapStateToProps,
     {updateBlog}
 )(UpdateForm);

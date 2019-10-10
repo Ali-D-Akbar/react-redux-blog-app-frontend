@@ -6,7 +6,7 @@ import {returnErrors} from "./messages";
 
 //ADD_COMMENT
 export const addComment = comment => (dispatch, getState) => {
-    axios.post(serverData.django_server + "/api/comment/", comment, tokenConfig(getState))
+    axios.post(serverData.django_server + '/api/comment/', comment, tokenConfig(getState))
         .catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
 

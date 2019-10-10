@@ -45,25 +45,18 @@ export const tokenConfig = (getState, isMultipart = false) => {
 export const loadUser = () => (dispatch, getState) => {
     // User Loading
     dispatch({type: USER_LOADING});
-    const token = getState().auth.token;
-    const config = {
-        headers: {
-            "Content-Type": "application/json"
-        }
-
-    };
-
-    if (token) {
-        config.headers["Authorization"] = `token ${token}`;
-    }
 
     axios
         .get(serverData.django_server + "/api/auth/user", tokenConfig(getState))
         .then(res => {
-            dispatch({
-                type: USER_LOADED,
-                payload: res.data
-            });
+            axios
+                .get(serverData.django_server + `/api/users/${res.data.id}/`, tokenConfig(getState))
+                .then(res => {
+                    dispatch({
+                        type: USER_LOADED,
+                        payload: res.data
+                    });
+                })
         })
         .catch(err => {
             dispatch(returnErrors(err.response.data, err.response.status));
@@ -92,6 +85,14 @@ export const login = (username, password) => dispatch => {
                 payload: res.data
             });
             dispatch(createMessage({login: `Welcome ${username.charAt(0).toUpperCase() + username.slice(1)} to the weblog. Checkout our blog posts!`}));
+            axios
+                .get(serverData.django_server + `/api/users/${res.data.user.id}/`, config)
+                .then(res => {
+                    dispatch({
+                        type: USER_LOADED,
+                        payload: res.data
+                    });
+                })
         })
         .catch(err => {
             dispatch(returnErrors(err.response.data, err.response.status));
@@ -137,12 +138,65 @@ export const register = ({username, password, email}) => dispatch => {
                 payload: res.data
             });
             dispatch(createMessage({login: `Welcome ${username.charAt(0).toUpperCase() + username.slice(1)} to the weblog. Checkout our blog posts!`}));
-
+            axios
+                .get(serverData.django_server + `/api/users/${res.data.user.id}/`, config)
+                .then(res => {
+                    dispatch({
+                        type: USER_LOADED,
+                        payload: res.data
+                    });
+                })
         })
         .catch(err => {
             dispatch(returnErrors(err.response.data, err.response.status));
             dispatch({
                 type: REGISTER_FAIL
             });
+        });
+};
+
+
+//UPDATE_USER_DATA
+export const updateUser = (id, body) => (dispatch, getState) => {
+    axios
+        .patch(serverData.django_server + `/api/users/${id}/`, body, tokenConfig(getState))
+        .then(res => {
+            dispatch({
+                type: USER_LOADED,
+                payload: res.data
+            });
+            dispatch(returnErrors('email', ''));
+            dispatch(createMessage({profile: 'Profile Updated!'}));
+        })
+        .then(() => {
+            setTimeout(() => dispatch(createMessage({profile: ''})), 2000)
+        })
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status));
+        });
+};
+
+
+//UPDATE_USER_DATA
+export const updateProfile = (id, body, isImage) => (dispatch, getState) => {
+    axios
+        .patch(serverData.django_server + `/api/Profile/${id}/`, body, tokenConfig(getState, isImage))
+        .then(res => {
+            dispatch(returnErrors('email', ''));
+            axios
+                .get(serverData.django_server + `/api/users/${res.data.userid}/`, tokenConfig(getState))
+                .then(res => {
+                    dispatch({
+                        type: USER_LOADED,
+                        payload: res.data
+                    });
+                    dispatch(createMessage({profile: 'Profile Updated!'}));
+                })
+        })
+        .then(() => {
+            setTimeout(() => dispatch(createMessage({profile: ''})), 2000)
+        })
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status));
         });
 };

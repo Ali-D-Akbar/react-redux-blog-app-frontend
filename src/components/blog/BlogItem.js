@@ -3,6 +3,7 @@ import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Redirect} from "react-router-dom";
 import defaultImage from '../../../public/default.png'
+import defaultProfilePicture from "../../../public/facebook-anonymous-app.jpg";
 import {blogDownvote, blogUpvote, deleteBlog, getBlogItem} from "../../actions/blogList";
 import {addComment, deleteComment} from "../../actions/comment";
 import CreateBlogModal from "../modal/CreateBlogModal";
@@ -108,8 +109,9 @@ class BlogItem extends Component {
     };
 
     render() {
-        if (this.state.reload)
+        if (this.state.reload) {
             return <Redirect to="/"/>;
+        }
         if (this.props.blogItem) {
             const authLinks = (
                 <div>
@@ -119,7 +121,7 @@ class BlogItem extends Component {
             );
             let isOwner = false;
             let isAuthenticated = false;
-            const owner = this.props.blogItem.owner;
+            const owner = this.props.blogItem.owner.username;
             if (this.props.auth.isAuthenticated) {
                 isOwner = this.props.auth.user.username === owner;
                 isAuthenticated = this.props.auth.isAuthenticated;
@@ -138,17 +140,31 @@ class BlogItem extends Component {
                             </div>
 
                             <div className="col-sm-7">
-                                <h1>{this.props.blogItem.title}</h1>
-                                <p>
-                                    Posted by: {this.props.blogItem.owner}
-                                </p>
-                                Posted on: {(new Date(this.props.blogItem.created)).toDateString()}
+                                <div className="row">
+                                    <img className="rounded-circle mr-2 ml-2" height="50"
+                                         src={this.props.blogItem.owner.profile &&
+                                         this.props.blogItem.owner.profile.image ?
+                                             this.props.blogItem.owner.profile.image
+                                             :
+                                             defaultProfilePicture
+                                         }
+                                         alt="Profile Icon"
+                                    />
+                                    <div>
+                                        <h4>
+                                            {this.props.blogItem.owner.first_name + ' ' + this.props.blogItem.owner.last_name}
+                                        </h4>
+                                        <div
+                                            className="text-muted">{(new Date(this.props.blogItem.created)).toDateString()} </div>
+                                    </div>
+                                </div>
                             </div>
 
+
                             <div className="col-sm-4">
-                                {isAuthenticated && this.props.auth.user.username === this.props.blogItem.owner ?
+                                {isAuthenticated && this.props.auth.user.username === this.props.blogItem.owner.username ?
                                     <div className="container">
-                                        <button className="rounded btn btn-primary float-right ml-4" type="button"
+                                        <button className="rounded btn btn-primary float-right ml-4"
                                                 onClick={this.showModal} title="Edit">
                                             <i className="fa fa-pencil"/>
                                         </button>
@@ -167,6 +183,8 @@ class BlogItem extends Component {
                             <p className='mt-4 alert-danger'>{this.props.messages.vote}</p>
                             : null
                         }
+
+                        <h2 className="mt-4">{this.props.blogItem.title}</h2>
 
                         {this.props.blogItem.image ?
                             <img className="mt-4 img-fluid rounded"
@@ -219,23 +237,34 @@ class BlogItem extends Component {
                                     if (comment.parent == null) return (
                                         <div className="card bg-lightgray" key={comment.id}>
                                             <div className="card-body" key={comment.id}>
-                                                <p className="card-text">Commented By: {comment.owner}</p>
-                                                {isAuthenticated && this.props.auth.user.username === comment.owner ?
+                                                {isAuthenticated && this.props.auth.user.username === comment.owner.username ?
                                                     <button
                                                         className="rounded btn btn-danger float-right"
-                                                        onClick={this.deleteComment(comment.id)}
-                                                    >
-                                                        <i className="fa fa-trash"
-                                                           title="Delete"
-                                                        />
+                                                        onClick={this.deleteComment(comment.id)}>
+                                                        <i className="fa fa-trash" title="Delete"/>
                                                     </button>
 
                                                     : null
                                                 }
-                                                <h5 className="card-title">{comment.description}</h5>
-                                                <h6 className="card-subtitle mb-2 text-muted">
-                                                    {(new Date(comment.created)).toDateString()}
-                                                </h6>
+                                                <div className="row">
+                                                    <img className="rounded-circle mr-2 ml-2" height="50"
+                                                         src={comment.owner.profile && comment.owner.profile.image ?
+                                                             comment.owner.profile.image
+                                                             :
+                                                             defaultProfilePicture
+                                                         }
+                                                         alt="Profile Icon"
+                                                    />
+                                                    <div>
+                                                        <h4>
+                                                            {comment.owner.first_name + ' ' + comment.owner.last_name}
+                                                        </h4>
+                                                        <h6 className="card-subtitle mb-2 text-muted">
+                                                            {(new Date(comment.created)).toDateString()}
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                                <h5 className="card-title mt-3">{comment.description}</h5>
                                                 {isAuthenticated ?
                                                     <div className="card my-4">
                                                         <h5 className="card-header">Reply:</h5>
@@ -263,8 +292,7 @@ class BlogItem extends Component {
                                                     {comment.reply.map((reply) => (
                                                         <div className="card" key={comment.id}>
                                                             <div className="card-body" key={reply.id}>
-                                                                <p className="card-text">Commented By: {reply.owner}</p>
-                                                                {isAuthenticated && this.props.auth.user.username === reply.owner ?
+                                                                {isAuthenticated && this.props.auth.user.username === reply.owner.username ?
                                                                     <button
                                                                         className="rounded float-right btn btn-danger"
                                                                         onClick={this.deleteComment(reply.id)}>
@@ -272,28 +300,28 @@ class BlogItem extends Component {
                                                                     </button>
                                                                     : null
                                                                 }
+                                                                <div className="row">
+                                                                    <img className="rounded-circle mr-2 ml-2"
+                                                                         height="50"
+                                                                         src={reply.owner.profile && reply.owner.profile.image ?
+                                                                             reply.owner.profile.image
+                                                                             :
+                                                                             defaultProfilePicture
+                                                                         }
+                                                                         alt="Profile Icon"
+                                                                    />
+                                                                    <div>
+                                                                        <h4>
+                                                                            {reply.owner.first_name + ' ' + reply.owner.last_name}
+                                                                        </h4>
+                                                                        <h6 className="card-subtitle mb-2 text-muted">
+                                                                            {(new Date(reply.created)).toDateString()}
+                                                                        </h6>
+                                                                    </div>
 
-                                                <div className="card">
-                                                    {comment.reply.map((reply) => (
-                                                        <div className="card" key={comment.id}>
-                                                            <div className="card-body" key={reply.id}>
-                                                                <p className="card-text">Commented By: {reply.owner}</p>
-                                                                {isAuthenticated && this.props.auth.user.username === reply.owner ?
-                                                                    <button
-                                                                        className="rounded float-right btn btn-danger"
-                                                                        onClick={this.deleteComment(reply.id)}
-                                                                    >
-                                                                        <i className="fa fa-trash"
-                                                                           title="Delete"
-                                                                        />
-                                                                    </button>
-                                                                    : null
-                                                                }
+                                                                </div>
 
-                                                                <h5 className="card-title">{reply.description}</h5>
-                                                                <h6 className="card-subtitle mb-2 text-muted">
-                                                                    {(new Date(reply.created)).toDateString()}
-                                                                </h6>
+                                                                <h5 className="card-title mt-3">{reply.description}</h5>
                                                             </div>
                                                         </div>
                                                     ))
