@@ -1,4 +1,4 @@
 {
-  "django_server": "https://webblog1234.herokuapp.com",
+  "django_server": "http://127.0.0.1:8000",
   "page_size": 3
 }

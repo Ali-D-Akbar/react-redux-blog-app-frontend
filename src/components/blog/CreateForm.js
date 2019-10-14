@@ -35,12 +35,6 @@ class CreateForm extends Component {
         } else {
             this.props.addBlog(form_data);
         }
-
-        this.setState({
-            title: "",
-            description: "",
-            image: ""
-        });
     };
 
     saveAsDraft = e => {
@@ -55,12 +49,6 @@ class CreateForm extends Component {
         } else {
             this.props.addBlog(form_data);
         }
-
-        this.setState({
-            title: "",
-            description: "",
-            image: ""
-        });
     };
 
     render() {

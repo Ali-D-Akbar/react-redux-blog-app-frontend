@@ -39,7 +39,8 @@ export class Login extends Component {
                         }
 
                         <div className="form-group">
-                            <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are required.</p>
+                            <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are
+                                required.</p>
                             <label>Username *</label>
                             <input
                                 type="text"

@@ -102,7 +102,8 @@ export class Register extends Component {
                     <h2 className="text-center">Register</h2>
                     <form onSubmit={this.onSubmit}>
                         <div className="form-group">
-                            <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are required.</p>
+                            <p id="formInstructions" className="mt-3">Fields marked with an asterisk (*) are
+                                required. </p>
                             <label>Username *</label>
                             <input
                                 type="text"

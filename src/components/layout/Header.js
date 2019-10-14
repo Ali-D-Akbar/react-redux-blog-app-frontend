@@ -2,12 +2,14 @@ import PropTypes from "prop-types";
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {Link} from 'react-router-dom';
+import defaultProfilePicture from '../../../public/facebook-anonymous-app.jpg'
 import weblog from '../../../public/weblog.png'
 import {logout} from "../../actions/auth";
 import {getBlogList} from "../../actions/blogList";
 import CreateForm from "../blog/CreateForm";
 import CreateBlogModal from "../modal/CreateBlogModal";
 import './Header.css'
+
 
 class Header extends Component {
     static propTypes = {
@@ -33,9 +35,27 @@ class Header extends Component {
     };
 
     render() {
+        const {isAuthenticated, user} = this.props.auth;
 
         const authLinks = (
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
+                {isAuthenticated ?
+                    <li className="nav-item  mr-2">
+                        <Link to={`/profile`}
+                              style={{textDecoration: 'none', color: 'black'}}>
+                            <div className="mr-3">
+                                <img className="rounded-circle mr-2" height="50"
+                                     src={user.profile && user.profile.image ? user.profile.image : defaultProfilePicture}
+                                     alt="Profile Icon"
+                                />
+                                {user.username}
+                            </div>
+                        </Link>
+                    </li>
+
+                    : null
+                }
+
                 <li className="nav-item  mr-2">
                     <button className="rounded btn btn-secondary" type="button" onClick={this.showModal}>
                         Post a New Blog
@@ -51,6 +71,7 @@ class Header extends Component {
 
         const guestLinks = (
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
+                <li className="nav-item mr-2">
                     <Link to="/register" className="nav-link">
                         <button className="btn btn-secondary">
                             Register

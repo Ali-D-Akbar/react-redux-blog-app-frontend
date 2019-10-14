@@ -1,4 +1,4 @@
-import {ADD_BLOG, DELETE_BLOG, GET_BLOGLIST, UPDATE_BLOG} from "../actionTypes/blog";
+import {ADD_BLOG, DELETE_BLOG, GET_BLOGLIST} from "../actionTypes/blog";
 
 const initialState = {
     count: 0,
@@ -28,12 +28,6 @@ export default function (state = initialState, action) {
                 ...state,
                 count: state.count + 1,
                 results: [action.payload, ...state.results],
-            };
-        case UPDATE_BLOG:
-            return {
-                ...state,
-                results: state.results.filter(blogItem => blogItem.id !== action.payload),
-                loading: true,
             };
         default:
             return state;

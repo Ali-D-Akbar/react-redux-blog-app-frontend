@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import {ADD_BLOG, CLEAR_BLOGITEM, DELETE_BLOG, GET_BLOGITEM, GET_BLOGLIST, UPDATE_BLOG} from '../actionTypes/blog'
+import {ADD_BLOG, DELETE_BLOG, GET_BLOGITEM, GET_BLOGLIST, UPDATE_BLOG} from '../actionTypes/blog'
 import serverData from '../config';
 import {tokenConfig} from "./auth";
 import {createMessage, returnErrors} from "./messages";
@@ -60,10 +60,6 @@ export const getBlogList = (url, order) => (dispatch, getState) => {
                 type: GET_BLOGLIST,
                 payload: res.data
             });
-            dispatch({
-                type: CLEAR_BLOGITEM,
-                payload: null
-            });
 
         }).catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
@@ -97,7 +93,10 @@ export const deleteBlog = (id) => (dispatch, getState) => {
 export const addBlog = (blog, isImage) => (dispatch, getState) => {
     axios.post(serverData.django_server + '/api/blog/', blog, tokenConfig(getState, isImage))
         .then(res => {
-            dispatch(createMessage({addBlog: "Blog Post Created Successfully!"}));
+            if (res.data.draft)
+                dispatch(createMessage({addBlog: "Blog Post has been saved as a draft!"}));
+            else
+                dispatch(createMessage({addBlog: "Blog Post Created Successfully!"}));
             dispatch({
                 type: ADD_BLOG,
                 payload: res.data
@@ -110,9 +109,13 @@ export const addBlog = (blog, isImage) => (dispatch, getState) => {
 export const updateBlog = (id, blog, isImage) => (dispatch, getState) => {
     axios.put(serverData.django_server + `/api/blog/${id}/`, blog, tokenConfig(getState, isImage))
         .then(res => {
+            if (res.data.draft)
+                dispatch(createMessage({updateBlog: "Blog Post has been saved as a draft!"}));
+            else
+                dispatch(createMessage({updateBlog: "Blog Post Created Successfully!"}));
             dispatch({
                 type: UPDATE_BLOG,
-                payload: id
+                payload: res.data
             });
         }).catch(err => dispatch(returnErrors(err.response.data, err.response.status)));
 };
