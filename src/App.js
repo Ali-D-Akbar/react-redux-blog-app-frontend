@@ -14,8 +14,6 @@ import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
 import store from './store';
 
-// import Header from "components/layout/Header";
-
 class App extends Component {
     componentDidMount() {
         store.dispatch(loadUser());
@@ -33,7 +31,7 @@ class App extends Component {
                                     <Route exact path="/" component={Dashboard}/>
                                     <Route exact path="/register" component={Register}/>
                                     <Route exact path="/login" component={Login}/>
-                                    <Route exact path="/profile" component={Profile}/>
+                                    <Route exact path="/profile/:username" component={Profile}/>
                                     <Route exact path="/blogitem/:blogId" component={BlogItem}/>
                                 </Switch>
                             </div>

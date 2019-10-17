@@ -1,15 +1,16 @@
 import {getData, getName} from 'country-list';
 import PropTypes from "prop-types";
-import React, {Component, Fragment} from "react";
+import React, {Component} from "react";
 import {connect} from 'react-redux';
 import defaultProfilePicture from '../../../public/facebook-anonymous-app.jpg'
-import {updateProfile, updateUser} from "../../actions/auth";
+import {getProfile, updateProfile, updateUser} from "../../actions/auth";
 import './Profile.css';
 
 
 class Profile extends Component {
 
     static propTypes = {
+        profile: PropTypes.object.isRequired,
         auth: PropTypes.object.isRequired,
     };
 
@@ -26,17 +27,19 @@ class Profile extends Component {
     };
 
     componentDidMount() {
+        const {match: {params}} = this.props;
+        this.props.getProfile(params.username);
         setTimeout(() => {
-            if (this.props.auth.user)
+            if (!this.props.profile.isLoading)
                 this.setState({
                     modalShow: false,
-                    first_name: this.props.auth.user.first_name,
-                    last_name: this.props.auth.user.last_name,
-                    email: this.props.auth.user.email,
-                    gender: this.props.auth.user.profile.gender,
-                    country: this.props.auth.user.profile.country,
-                    date_of_birth: this.props.auth.user.profile.date_of_birth,
-                    contact_number: this.props.auth.user.profile.contact_number,
+                    first_name: this.props.profile.user.first_name,
+                    last_name: this.props.profile.user.last_name,
+                    email: this.props.profile.user.email,
+                    gender: this.props.profile.user.profile.gender,
+                    country: this.props.profile.user.profile.country,
+                    date_of_birth: this.props.profile.user.profile.date_of_birth,
+                    contact_number: this.props.profile.user.profile.contact_number,
                     image: "",
                 })
         }, 1000)
@@ -53,6 +56,7 @@ class Profile extends Component {
     };
 
     handleImageChange = (e) => {
+        e.preventDefault();
         this.setState({
             image: e.target.files[0]
         })
@@ -67,10 +71,14 @@ class Profile extends Component {
     };
 
     showDiv = (e) => {
-        let input = this.refs[e.target.id];
-        e.target.style.display = "none";
-        input.style.display = "block";
-        input.focus();
+        const {user} = this.props.profile;
+        let loggedUser = this.props.auth.user;
+        if (loggedUser.username === user.username) {
+            let input = this.refs[e.target.id];
+            e.target.style.display = "none";
+            input.style.display = "block";
+            input.focus();
+        }
     };
 
     showImageDiv = (e) => {
@@ -80,16 +88,17 @@ class Profile extends Component {
     };
 
     onBlur = (e) => {
+        e.preventDefault();
         let body = new FormData();
         body.append(e.target.name, e.target.value);
         if (e.target.name === 'first_name' || e.target.name === 'last_name' || e.target.name === 'email')
-            this.props.updateUser(this.props.auth.user.id, body);
+            this.props.updateUser(this.props.profile.user.username, body);
         else {
             if (this.state.image) {
                 body.append('image', this.state.image, this.state.image.name);
-                this.props.updateProfile(this.props.auth.user.profile.id, body, true);
+                this.props.updateProfile(this.props.profile.user.profile.id, body, true);
             } else {
-                this.props.updateProfile(this.props.auth.user.profile.id, body);
+                this.props.updateProfile(this.props.profile.user.profile.id, body);
             }
 
         }
@@ -100,7 +109,9 @@ class Profile extends Component {
     };
 
     render() {
-        const {isAuthenticated, user} = this.props.auth;
+        const {isLoading, user} = this.props.profile;
+        const {isAuthenticated} = this.props.auth;
+        let loggedUser = this.props.auth.user;
 
         let countries = getData();
         countries.sort(function (a, b) {
@@ -110,10 +121,22 @@ class Profile extends Component {
             return (a < b) ? -1 : (a > b) ? 1 : 0;
         });
 
-        if (isAuthenticated) {
+        if (isLoading) {
             return (
-                <Fragment>
-                    <div className="mt-3 container card card-body">
+                <div>
+                    Loading...
+                </div>
+            )
+        } else {
+            return (
+                <div className="mt-4">
+                    {this.props.messages && this.props.messages.profile ?
+                        <span className='rounded alert alert-success'>
+                            {this.props.messages.profile}
+                        </span>
+                        : null
+                    }
+                    <div className="mt-4 container card card-body">
                         <div className="row">
                             <div className="col-sm-4">
                                 <img
@@ -123,9 +146,13 @@ class Profile extends Component {
                                     id="edit"
                                 />
 
-                                <button onClick={this.showImageDiv} className="profile-edit rounded btn btn-primary">
-                                    <i className="fa fa-pencil"/>
-                                </button>
+                                {isAuthenticated && loggedUser.username === user.username ?
+                                    <button onClick={this.showImageDiv}
+                                            className="profile-edit rounded btn btn-primary">
+                                        <i className="fa fa-pencil"/>
+                                    </button>
+                                    : null
+                                }
 
                                 <form className="profile-input" ref="image" onSubmit={this.onBlur}>
                                     <input
@@ -150,7 +177,7 @@ class Profile extends Component {
                                     <h4 className="row">
                                         <label className="col-sm-4"> Username: </label>
                                         <div className="col-sm-8">
-                                            <p>
+                                            <p className="text-muted">
                                                 {user.username}
                                             </p>
                                         </div>
@@ -161,6 +188,9 @@ class Profile extends Component {
                                         <div className="col-sm-8">
                                             <p onClick={this.showDiv} id="first_name" ref="first_name_label">
                                                 {user.first_name ? ' ' + user.first_name : " ---"}
+                                                {isAuthenticated && loggedUser.username === user.username &&
+                                                <i className="float-right fa fa-pencil"/>
+                                                }
                                             </p>
                                             <input
                                                 className="profile-input form-control"
@@ -183,6 +213,9 @@ class Profile extends Component {
                                         <div className="col-sm-8">
                                             <p onClick={this.showDiv} id="last_name" ref="last_name_label">
                                                 {user.last_name ? user.last_name : "---"}
+                                                {isAuthenticated && loggedUser.username === user.username &&
+                                                <i className="float-right fa fa-pencil"/>
+                                                }
                                             </p>
                                             <input
                                                 className="profile-input form-control"
@@ -213,6 +246,9 @@ class Profile extends Component {
                                         <div className="col-sm-8">
                                             <p onClick={this.showDiv} id="email" ref="email_label">
                                                 {user.email ? user.email : "---"}
+                                                {isAuthenticated && loggedUser.username === user.username &&
+                                                <i className="float-right fa fa-pencil"/>
+                                                }
                                             </p>
 
                                             <input
@@ -236,6 +272,9 @@ class Profile extends Component {
                                         <div className="col-sm-8">
                                             <p onClick={this.showDiv} id="gender" ref="gender_label">
                                                 {user.profile.gender === 'M' ? 'Male' : user.profile.gender === 'F' ? 'female' : '---'}
+                                                {isAuthenticated && loggedUser.username === user.username &&
+                                                <i className="float-right fa fa-pencil"/>
+                                                }
                                             </p>
 
                                             <select className="profile-input form-control"
@@ -258,6 +297,9 @@ class Profile extends Component {
                                         <div className="col-sm-8">
                                             <p onClick={this.showDiv} id="country" ref="country_label">
                                                 {getName(user.profile.country)}
+                                                {isAuthenticated && loggedUser.username === user.username &&
+                                                <i className="float-right fa fa-pencil"/>
+                                                }
                                             </p>
 
                                             <select className="profile-input mb-2 rounded form-control"
@@ -285,6 +327,9 @@ class Profile extends Component {
                                                     :
                                                     '---'
                                                 }
+                                                {isAuthenticated && loggedUser.username === user.username &&
+                                                <i className="float-right fa fa-pencil"/>
+                                                }
                                             </p>
 
                                             <input
@@ -306,6 +351,9 @@ class Profile extends Component {
                                         <div className="col-sm-8">
                                             <p onClick={this.showDiv} id="contact_number" ref="contact_number_label">
                                                 {user.profile.contact_number ? user.profile.contact_number : '---'}
+                                                {isAuthenticated && loggedUser.username === user.username &&
+                                                <i className="float-right fa fa-pencil"/>
+                                                }
                                             </p>
 
                                             <input
@@ -323,35 +371,22 @@ class Profile extends Component {
                                             />
                                         </div>
                                     </h4>
-
-                                    {this.props.messages && this.props.messages.profile ?
-                                        <span className='alert alert-success'>
-                                            {this.props.messages.profile}
-                                        </span>
-                                        : null
-                                    }
-
                                 </div>
                             </div>
                         </div>
                     </div>
-                </Fragment>
-            );
-        } else {
-            return (
-                <div>
-
                 </div>
-            )
+            );
         }
 
     }
 }
 
 const mapStateToProps = state => ({
+    profile: state.profile,
     auth: state.auth,
     errors: state.errors,
     messages: state.messages,
 });
 
-export default connect(mapStateToProps, {updateProfile, updateUser})(Profile);
+export default connect(mapStateToProps, {getProfile, updateProfile, updateUser})(Profile);

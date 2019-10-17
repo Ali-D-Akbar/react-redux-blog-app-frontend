@@ -166,7 +166,7 @@ class BlogList extends Component {
                                                         <li> Posted by
                                                             <span className="posted-by">
                                                                 <span className="author">
-                                                                    {' ' + blogItem.owner.first_name + ' ' + blogItem.owner.last_name}
+                                                                    {' ' + blogItem.owner.username.charAt(0).toUpperCase() + blogItem.owner.username.slice(1)}
                                                                 </span>
                                                             </span>
                                                         </li>

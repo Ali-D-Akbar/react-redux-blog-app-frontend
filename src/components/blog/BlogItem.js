@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import defaultImage from '../../../public/default.png'
 import defaultProfilePicture from "../../../public/facebook-anonymous-app.jpg";
 import {blogDownvote, blogUpvote, deleteBlog, getBlogItem} from "../../actions/blogList";
@@ -141,19 +141,23 @@ class BlogItem extends Component {
 
                             <div className="col-sm-7">
                                 <div className="row">
-                                    <img className="rounded-circle mr-2 ml-2" height="50"
-                                         src={this.props.blogItem.owner.profile &&
-                                         this.props.blogItem.owner.profile.image ?
-                                             this.props.blogItem.owner.profile.image
-                                             :
-                                             defaultProfilePicture
-                                         }
-                                         alt="Profile Icon"
-                                    />
+                                    <Link to={`/profile/${this.props.blogItem.owner.username}`}>
+                                        <img className="rounded-circle mr-2 ml-2" height="50"
+                                             src={this.props.blogItem.owner.profile &&
+                                             this.props.blogItem.owner.profile.image ?
+                                                 this.props.blogItem.owner.profile.image
+                                                 :
+                                                 defaultProfilePicture
+                                             }
+                                             alt="Profile Icon"
+                                        />
+                                    </Link>
                                     <div>
-                                        <h4>
-                                            {this.props.blogItem.owner.first_name + ' ' + this.props.blogItem.owner.last_name}
-                                        </h4>
+                                        <Link to={`/profile/${this.props.blogItem.owner.username}`}>
+                                            <h4>
+                                                {this.props.blogItem.owner.first_name + ' ' + this.props.blogItem.owner.last_name}
+                                            </h4>
+                                        </Link>
                                         <div
                                             className="text-muted">{(new Date(this.props.blogItem.created)).toDateString()} </div>
                                     </div>
@@ -247,18 +251,22 @@ class BlogItem extends Component {
                                                     : null
                                                 }
                                                 <div className="row">
-                                                    <img className="rounded-circle mr-2 ml-2" height="50"
-                                                         src={comment.owner.profile && comment.owner.profile.image ?
-                                                             comment.owner.profile.image
-                                                             :
-                                                             defaultProfilePicture
-                                                         }
-                                                         alt="Profile Icon"
-                                                    />
+                                                    <Link to={`/profile/${comment.owner.username}`}>
+                                                        <img className="rounded-circle mr-2 ml-2" height="50"
+                                                             src={comment.owner.profile && comment.owner.profile.image ?
+                                                                 comment.owner.profile.image
+                                                                 :
+                                                                 defaultProfilePicture
+                                                             }
+                                                             alt="Profile Icon"
+                                                        />
+                                                    </Link>
                                                     <div>
-                                                        <h4>
-                                                            {comment.owner.first_name + ' ' + comment.owner.last_name}
-                                                        </h4>
+                                                        <Link to={`/profile/${comment.owner.username}`}>
+                                                            <h4>
+                                                                {comment.owner.first_name + ' ' + comment.owner.last_name}
+                                                            </h4>
+                                                        </Link>
                                                         <h6 className="card-subtitle mb-2 text-muted">
                                                             {(new Date(comment.created)).toDateString()}
                                                         </h6>
@@ -300,20 +308,25 @@ class BlogItem extends Component {
                                                                     </button>
                                                                     : null
                                                                 }
+
                                                                 <div className="row">
-                                                                    <img className="rounded-circle mr-2 ml-2"
-                                                                         height="50"
-                                                                         src={reply.owner.profile && reply.owner.profile.image ?
-                                                                             reply.owner.profile.image
-                                                                             :
-                                                                             defaultProfilePicture
-                                                                         }
-                                                                         alt="Profile Icon"
-                                                                    />
+                                                                    <Link to={`/profile/${reply.owner.username}`}>
+                                                                        <img className="rounded-circle mr-2 ml-2"
+                                                                             height="50"
+                                                                             src={reply.owner.profile && reply.owner.profile.image ?
+                                                                                 reply.owner.profile.image
+                                                                                 :
+                                                                                 defaultProfilePicture
+                                                                             }
+                                                                             alt="Profile Icon"
+                                                                        />
+                                                                    </Link>
                                                                     <div>
-                                                                        <h4>
-                                                                            {reply.owner.first_name + ' ' + reply.owner.last_name}
-                                                                        </h4>
+                                                                        <Link to={`/profile/${reply.owner.username}`}>
+                                                                            <h4>
+                                                                                {reply.owner.first_name + ' ' + reply.owner.last_name}
+                                                                            </h4>
+                                                                        </Link>
                                                                         <h6 className="card-subtitle mb-2 text-muted">
                                                                             {(new Date(reply.created)).toDateString()}
                                                                         </h6>

@@ -1,0 +1,2 @@
+export const PROFILE_LOADED = "PROFILE_LOADED";
+export const PROFILE_LOADING = "PROFILE_LOADING";
