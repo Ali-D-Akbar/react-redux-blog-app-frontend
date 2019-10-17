@@ -41,7 +41,7 @@ class Header extends Component {
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
                 {isAuthenticated ?
                     <li className="nav-item  mr-2">
-                        <Link to={`/profile`}
+                        <Link to={`/profile/${user.username}`}
                               style={{textDecoration: 'none', color: 'black'}}>
                             <div className="mr-3">
                                 <img className="rounded-circle mr-2" height="50"

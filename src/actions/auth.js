@@ -9,6 +9,9 @@ import {
     USER_LOADED,
     USER_LOADING
 } from "../actionTypes/auth";
+import {PROFILE_LOADED, PROFILE_LOADING} from "../actionTypes/profile";
+
+
 import serverData from '../config';
 import {createMessage, returnErrors} from "./messages";
 
@@ -50,7 +53,7 @@ export const loadUser = () => (dispatch, getState) => {
         .get(serverData.django_server + "/api/auth/user", tokenConfig(getState))
         .then(res => {
             axios
-                .get(serverData.django_server + `/api/users/${res.data.id}/`, tokenConfig(getState))
+                .get(serverData.django_server + `/api/users/${res.data.username}/`, tokenConfig(getState))
                 .then(res => {
                     dispatch({
                         type: USER_LOADED,
@@ -86,7 +89,7 @@ export const login = (username, password) => dispatch => {
             });
             dispatch(createMessage({login: `Welcome ${username.charAt(0).toUpperCase() + username.slice(1)} to the weblog. Checkout our blog posts!`}));
             axios
-                .get(serverData.django_server + `/api/users/${res.data.user.id}/`, config)
+                .get(serverData.django_server + `/api/users/${res.data.user.username}/`, config)
                 .then(res => {
                     dispatch({
                         type: USER_LOADED,
@@ -139,7 +142,7 @@ export const register = ({username, password, email}) => dispatch => {
             });
             dispatch(createMessage({login: `Welcome ${username.charAt(0).toUpperCase() + username.slice(1)} to the weblog. Checkout our blog posts!`}));
             axios
-                .get(serverData.django_server + `/api/users/${res.data.user.id}/`, config)
+                .get(serverData.django_server + `/api/users/${res.data.user.username}/`, config)
                 .then(res => {
                     dispatch({
                         type: USER_LOADED,
@@ -155,14 +158,29 @@ export const register = ({username, password, email}) => dispatch => {
         });
 };
 
-
-//UPDATE_USER_DATA
-export const updateUser = (id, body) => (dispatch, getState) => {
+export const getProfile = (username) => (dispatch, getState) => {
+    dispatch({type: PROFILE_LOADING});
     axios
-        .patch(serverData.django_server + `/api/users/${id}/`, body, tokenConfig(getState))
+        .get(serverData.django_server + `/api/users/${username}/`, tokenConfig(getState))
         .then(res => {
             dispatch({
-                type: USER_LOADED,
+                type: PROFILE_LOADED,
+                payload: res.data
+            });
+        })
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status));
+        });
+};
+
+
+//UPDATE_USER_DATA
+export const updateUser = (username, body) => (dispatch, getState) => {
+    axios
+        .patch(serverData.django_server + `/api/users/${username}/`, body, tokenConfig(getState))
+        .then(res => {
+            dispatch({
+                type: PROFILE_LOADED,
                 payload: res.data
             });
             dispatch(returnErrors('email', ''));
@@ -187,7 +205,7 @@ export const updateProfile = (id, body, isImage) => (dispatch, getState) => {
                 .get(serverData.django_server + `/api/users/${res.data.userid}/`, tokenConfig(getState))
                 .then(res => {
                     dispatch({
-                        type: USER_LOADED,
+                        type: PROFILE_LOADED,
                         payload: res.data
                     });
                     dispatch(createMessage({profile: 'Profile Updated!'}));
